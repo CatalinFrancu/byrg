@@ -10,6 +10,8 @@ project(
 set(SOURCES
     src/Board.cpp
     src/Board.h
+    src/Clock.cpp
+    src/Clock.h
     src/Command.cpp
     src/Command.h
     src/Game.cpp

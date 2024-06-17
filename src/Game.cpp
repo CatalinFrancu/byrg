@@ -27,9 +27,13 @@ void Game::restart(int boardType) {
 }
 
 std::string Game::findMove(int player) {
+  clock.start();
   SearchResult sr = minimax(player, 2);
   board.makeMove(player, sr.move);
-  return StrUtil::moveToString(sr.move.mask, board.getSize());
+  std::string str = StrUtil::moveToString(sr.move.mask, board.getSize());
+  clock.stop();
+
+  return str;
 }
 
 SearchResult Game::minimax(int player, int depth) {

@@ -1,12 +1,14 @@
 #pragma once
 
 #include "Board.h"
+#include "Clock.h"
 #include "SearchResult.h"
 #include <string>
 
 class Game {
 public:
   Board board;
+  Clock clock;
 
   bool setType(std::string desc);
   void restart();

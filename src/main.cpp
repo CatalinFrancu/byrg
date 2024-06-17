@@ -7,7 +7,7 @@ int main() {
 
   Command cmd;
   Game game;
-  std::string move;
+  std::string resp;
 
   while (cmd.type != Command::T_QUIT) {
     cmd.readFromStdin();
@@ -26,14 +26,14 @@ int main() {
         break;
 
       case Command::T_CPUTIME:
-        // Unimplemented.
-        Response::success("0.0");
+        resp = std::to_string(game.clock.getSeconds());
+        Response::success(resp);
         break;
 
       case Command::T_GENMOVE:
-        move = game.findMove(cmd.intArg);
+        resp = game.findMove(cmd.intArg);
         // game.board.print();
-        Response::success(move);
+        Response::success(resp);
         break;
 
       case Command::T_PLAY:
