@@ -23,7 +23,6 @@ void Game::restart() {
 
 void Game::restart(int boardType) {
   board.init(boardType);
-  Piece::precomputePieces(board.getSize());
 }
 
 std::string Game::findMove(int player) {

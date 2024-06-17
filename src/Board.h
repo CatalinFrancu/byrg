@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "Move.h"
 #include "MoveList.h"
+#include "Piece.h"
 #include "Score.h"
 
 class Board {
@@ -21,10 +22,12 @@ public:
   };
   static constexpr char DEFAULT_COLOR[7] = "\e[49m";
 
-  unsigned char type;   // 2-player Duo or 4-player Classic
+  u8 type;   // 2-player Duo or 4-player Classic
 
   // border masks to be used during the move generation
   static bitset firstRank, lastRank, firstFile, lastFile;
+
+  Piece pieces[NUM_PIECES];
 
   // occupancy per player
   bitset occ[MAX_PLAYERS];
@@ -50,6 +53,7 @@ public:
 private:
   void initBorderMasks();
   void initPlayerMasks();
+  void initPieces();
   void makeLandscape(int player, bitset& unavailable, bitset& stones);
   bitset getStartingPos(int player);
   void genMovesWithPiece(int player, int piece, int rot, bitset& unavailable,

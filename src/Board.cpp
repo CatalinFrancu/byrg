@@ -1,7 +1,9 @@
 #include "assert.h"
+#include "Bitmap.h"
 #include "Board.h"
 #include "globals.h"
 #include "MoveList.h"
+#include "Piece.h"
 
 const int Board::SIZES[Board::NUM_TYPES] = { 14, 20 };
 const int Board::NUM_PLAYERS[Board::NUM_TYPES] = { 2, 4 };
@@ -27,6 +29,7 @@ void Board::init(int type) {
   this->type = type;
   initBorderMasks();
   initPlayerMasks();
+  initPieces();
 }
 
 void Board::initBorderMasks() {
@@ -43,6 +46,21 @@ void Board::initPlayerMasks() {
   for (int i = 0; i < getNumPlayers(); i++) {
     occ[i] = 0;
     inHand[i] = (1 << NUM_PIECES) - 1;
+  }
+}
+
+void Board::initPieces() {
+  Bitmap bitmap;
+  for (int i = 0; i < NUM_PIECES; i++) {
+    pieces[i].numVariants = 0;
+    bitmap.copyFrom(BITMAPS[i]);
+    for (int mir = 0; mir < 2; mir++) {
+      for (int rot = 0; rot < 4; rot++) {
+        pieces[i].considerBitmap(bitmap, getSize());
+        bitmap.rotate();
+      }
+      bitmap.mirror();
+    }
   }
 }
 
@@ -71,7 +89,7 @@ void Board::genMoves(int player, MoveList& dest) {
     int hand = inHand[player];
     while (hand) {
       int piece = __builtin_ctz(hand);
-      for (int rot = 0; rot < numRotations[piece]; rot++) {
+      for (int rot = 0; rot < pieces[piece].numVariants; rot++) {
         genMovesWithPiece(player, piece, rot, unavailable, stones, dest);
       }
       hand &= hand - 1;
@@ -121,7 +139,7 @@ bitset Board::getStartingPos(int player) {
 
 void Board::genMovesWithPiece(int player, int piece, int rot, bitset& unavailable,
                               bitset& stones, MoveList& dest) {
-  bitset& orig = pieces[piece][rot];
+  bitset& orig = pieces[piece].variants[rot].mask;
 
   bool rankOverflow = false;
   int rank = 0;
@@ -172,8 +190,8 @@ int Board::getPieceFromMask(bitset mask) {
   }
 
   for (int p = 0; p < NUM_PIECES; p++) {
-    for (int rot = 0; rot < numRotations[p]; rot++) {
-      if (pieces[p][rot] == mask) {
+    for (int rot = 0; rot < pieces[p].numVariants; rot++) {
+      if (pieces[p].variants[rot].mask == mask) {
         return p;
       }
     }

@@ -8,6 +8,8 @@ project(
 #include(GNUInstallDirs)
 
 set(SOURCES
+    src/Bitmap.cpp
+    src/Bitmap.h
     src/Board.cpp
     src/Board.h
     src/Clock.cpp
@@ -16,7 +18,6 @@ set(SOURCES
     src/Command.h
     src/Game.cpp
     src/Game.h
-    src/globals.cpp
     src/globals.h
     src/main.cpp
     src/Move.h
@@ -24,6 +25,8 @@ set(SOURCES
     src/MoveList.h
     src/Piece.cpp
     src/Piece.h
+    src/PieceVariant.cpp
+    src/PieceVariant.h
     src/Response.cpp
     src/Response.h
     src/Score.h
