@@ -5,7 +5,7 @@
 
 const int Board::SIZES[Board::NUM_TYPES] = { 14, 20 };
 const int Board::NUM_PLAYERS[Board::NUM_TYPES] = { 2, 4 };
-const int Board::STARTING_POSITIONS[Board::NUM_TYPES][Board::MAX_PLAYERS] = {
+const int Board::STARTING_POSITIONS[Board::NUM_TYPES][MAX_PLAYERS] = {
   { 130, 65 },
   { 380, 399, 19, 0 },
 };
@@ -46,19 +46,40 @@ void Board::initPlayerMasks() {
   }
 }
 
-void Board::genMoves(int player, MoveList& dest) {
-  bitset unavailable;
-  bitset stones;
-  makeLandscape(player, unavailable, stones);
+Score Board::eval() {
+  Score score;
+  for (int i = 0; i < getNumPlayers(); i++) {
+    bitset unavailable;
+    bitset stones;
+    makeLandscape(i, unavailable, stones);
+    score.val[i] =
+      occ[i].count() * COEF_POP +
+      stones.count() * COEF_STONES;
+  }
+  return score;
+}
 
+void Board::genMoves(int player, MoveList& dest) {
+  int inactivePlayers = 0;
   dest.size = 0;
-  int hand = inHand[player];
-  while (hand) {
-    int piece = __builtin_ctz(hand);
-    for (int rot = 0; rot < numRotations[piece]; rot++) {
-      genMovesWithPiece(player, piece, rot, unavailable, stones, dest);
+
+  while (!dest.size && inactivePlayers < getNumPlayers()) {
+    bitset unavailable;
+    bitset stones;
+    makeLandscape(player, unavailable, stones);
+
+    int hand = inHand[player];
+    while (hand) {
+      int piece = __builtin_ctz(hand);
+      for (int rot = 0; rot < numRotations[piece]; rot++) {
+        genMovesWithPiece(player, piece, rot, unavailable, stones, dest);
+      }
+      hand &= hand - 1;
     }
-    hand &= hand - 1;
+
+    dest.player = player;
+    player = (player + 1) % getNumPlayers();
+    inactivePlayers++;
   }
 }
 
@@ -131,18 +152,14 @@ void Board::tryMove(int piece, bitset& mask, bitset& unavailable,
   }
 }
 
-int Board::chooseMove(int player, MoveList& list) {
-  int i = 0;
-  while ((i < list.size) &&
-         (PIECE_SIZES[list.pieceIndex[i]] == PIECE_SIZES[list.pieceIndex[0]])) {
-    i++;
-  }
-  return rand() % i;
+void Board::makeMove(int player, Move& move) {
+  occ[player] ^= move.mask;
+  inHand[player] ^= (1 << move.piece);
 }
 
-void Board::makeMove(int player, bitset& mask, int piece) {
-  occ[player] |= mask;
-  inHand[player] ^= (1 << piece);
+void Board::undoMove(int player, Move& move) {
+  // Identical, under the current board representation.
+  makeMove(player, move);
 }
 
 int Board::getPieceFromMask(bitset mask) {

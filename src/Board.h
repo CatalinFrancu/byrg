@@ -1,18 +1,20 @@
 #pragma once
 
 #include "globals.h"
+#include "Move.h"
 #include "MoveList.h"
+#include "Score.h"
 
 class Board {
 public:
-  static const int MAX_PLAYERS = 4;
-
   static const int T_DUO = 0;
   static const int T_CLASSIC = 1;
   static const int NUM_TYPES = 2;
   static const int SIZES[];
   static const int NUM_PLAYERS[];
   static const int STARTING_POSITIONS[][MAX_PLAYERS];
+  static const int COEF_POP = 4;
+  static const int COEF_STONES = 1;
 
   static constexpr char ANSI_COLORS[MAX_PLAYERS][7] = {
     "\e[106m", "\e[103m", "\e[101m", "\e[102m",
@@ -33,9 +35,14 @@ public:
   int getSize();
   int getNumPlayers();
   void init(int type);
+
+  Score eval();
+
+  // Generates moves for the first player, beginning with @player, that still
+  // has legal moves. Returns an empty MoveList if the game is over.
   void genMoves(int player, MoveList& dest);
-  int chooseMove(int player, MoveList& list);
-  void makeMove(int player, bitset& mask, int piece);
+  void makeMove(int player, Move& move);
+  void undoMove(int player, Move& move);
   int getPieceFromMask(bitset mask);
   void print();
   void printBit(int bit);

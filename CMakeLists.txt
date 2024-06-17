@@ -17,12 +17,16 @@ set(SOURCES
     src/globals.cpp
     src/globals.h
     src/main.cpp
+    src/Move.h
     src/MoveList.cpp
     src/MoveList.h
     src/Piece.cpp
     src/Piece.h
     src/Response.cpp
     src/Response.h
+    src/Score.h
+    src/SearchResult.cpp
+    src/SearchResult.h
     src/StrUtil.cpp
     src/StrUtil.h
 )

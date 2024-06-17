@@ -1,6 +1,7 @@
 #include <assert.h>
 #include "Game.h"
 #include "Piece.h"
+#include "SearchResult.h"
 #include <string>
 #include "StrUtil.h"
 
@@ -25,17 +26,46 @@ void Game::restart(int boardType) {
   Piece::precomputePieces(board.getSize());
 }
 
-std::string Game::genMove(int player) {
+std::string Game::findMove(int player) {
+  SearchResult sr = minimax(player, 2);
+  board.makeMove(player, sr.move);
+  return StrUtil::moveToString(sr.move.mask, board.getSize());
+}
+
+SearchResult Game::minimax(int player, int depth) {
+  SearchResult best;
+  if (depth == 0) {
+    best.score = board.eval();
+    return best;
+  }
+
   MoveList list;
   board.genMoves(player, list);
-  assert(list.size);
-  int m = board.chooseMove(player, list);
-  board.makeMove(player, list.moves[m], list.pieceIndex[m]);
-  return StrUtil::moveToString(list.moves[m], board.getSize());
+
+  if (!list.size) {
+    best.score = board.eval();
+    return best;
+  }
+  player = list.player; // not necessarily the same
+
+  best = SearchResult::minusInfinity();
+
+  for (int i = 0; i < list.size; i++) {
+    Move& mv = list.moves[i];
+    board.makeMove(player, mv);
+    SearchResult sr = minimax((player + 1) % board.getNumPlayers(), depth - 1);
+    if (sr.score.val[player] > best.score.val[player]) {
+      best = { mv, sr.score };
+    }
+    board.undoMove(player, mv);
+  }
+
+  return best;
 }
 
 void Game::makeMove(int player, std::string move) {
-  bitset mask = StrUtil::stringToMove(move, board.getSize());
-  int piece = board.getPieceFromMask(mask);
-  board.makeMove(player, mask, piece);
+  Move m;
+  m.mask = StrUtil::stringToMove(move, board.getSize());
+  m.piece = board.getPieceFromMask(m.mask);
+  board.makeMove(player, m);
 }

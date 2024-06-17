@@ -31,7 +31,7 @@ int main() {
         break;
 
       case Command::T_GENMOVE:
-        move = game.genMove(cmd.intArg);
+        move = game.findMove(cmd.intArg);
         // game.board.print();
         Response::success(move);
         break;
