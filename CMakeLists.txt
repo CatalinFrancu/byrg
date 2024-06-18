@@ -23,8 +23,8 @@ set(SOURCES
     src/globals.h
     src/main.cpp
     src/Move.h
-    src/MoveList.cpp
-    src/MoveList.h
+    src/MoveGenerator.cpp
+    src/MoveGenerator.h
     src/Piece.cpp
     src/Piece.h
     src/PieceVariant.cpp

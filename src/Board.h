@@ -3,7 +3,6 @@
 #include "globals.h"
 #include "Bitset.h"
 #include "Move.h"
-#include "MoveList.h"
 #include "Piece.h"
 #include "Score.h"
 
@@ -40,11 +39,10 @@ public:
   int getNumPlayers();
   void init(int type);
 
+  void makeLandscape(int player, Bitset& unavailable, Bitset& stones);
+  Bitset getStartingPos(int player);
   Score eval();
 
-  // Generates moves for the first player, beginning with @player, that still
-  // has legal moves. Returns an empty MoveList if the game is over.
-  void genMoves(int player, MoveList& dest);
   void makeMove(int player, Move& move);
   void undoMove(int player, Move& move);
   int getPieceFromMask(Bitset mask);
@@ -55,10 +53,4 @@ private:
   void initBorderMasks();
   void initPlayerMasks();
   void initPieces();
-  void makeLandscape(int player, Bitset& unavailable, Bitset& stones);
-  Bitset getStartingPos(int player);
-  void genMovesWithPiece(int player, int piece, int rot, Bitset& unavailable,
-                         Bitset& stones, MoveList& dest);
-  void tryMove(int piece, Bitset& mask, Bitset& unavailable,
-               Bitset& stones, MoveList& dest);
 };

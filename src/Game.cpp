@@ -1,5 +1,6 @@
 #include <assert.h>
 #include "Game.h"
+#include "MoveGenerator.h"
 #include "Piece.h"
 #include "SearchResult.h"
 #include <string>
@@ -42,19 +43,19 @@ SearchResult Game::minimax(int player, int depth) {
     return best;
   }
 
-  MoveList list;
-  board.genMoves(player, list);
+  MoveGenerator gen(board);
+  gen.run(player);
 
-  if (!list.size) {
+  if (!gen.size) {
     best.score = board.eval();
     return best;
   }
-  player = list.player; // not necessarily the same
+  player = gen.player; // not necessarily the same
 
   best = SearchResult::minusInfinity();
 
-  for (int i = 0; i < list.size; i++) {
-    Move& mv = list.moves[i];
+  for (int i = 0; i < gen.size; i++) {
+    Move& mv = gen.moves[i];
     board.makeMove(player, mv);
     SearchResult sr = minimax((player + 1) % board.getNumPlayers(), depth - 1);
     if (sr.score.val[player] > best.score.val[player]) {

@@ -2,7 +2,6 @@
 #include "Bitmap.h"
 #include "Board.h"
 #include "globals.h"
-#include "MoveList.h"
 #include "Piece.h"
 #include <stdio.h>
 
@@ -79,30 +78,6 @@ Score Board::eval() {
   return score;
 }
 
-void Board::genMoves(int player, MoveList& dest) {
-  int inactivePlayers = 0;
-  dest.size = 0;
-
-  while (!dest.size && inactivePlayers < getNumPlayers()) {
-    Bitset unavailable;
-    Bitset stones;
-    makeLandscape(player, unavailable, stones);
-
-    int hand = inHand[player];
-    while (hand) {
-      int piece = __builtin_ctz(hand);
-      for (int rot = 0; rot < pieces[piece].numVariants; rot++) {
-        genMovesWithPiece(player, piece, rot, unavailable, stones, dest);
-      }
-      hand &= hand - 1;
-    }
-
-    dest.player = player;
-    player = (player + 1) % getNumPlayers();
-    inactivePlayers++;
-  }
-}
-
 void Board::makeLandscape(int player, Bitset& unavailable, Bitset& stones) {
   unavailable.clear();
   Bitset& me = occ[player];
@@ -138,39 +113,6 @@ Bitset Board::getStartingPos(int player) {
   int pos = STARTING_POSITIONS[type][player];
   result.set(pos);
   return result;
-}
-
-void Board::genMovesWithPiece(int player, int piece, int rot, Bitset& unavailable,
-                              Bitset& stones, MoveList& dest) {
-  Bitset& orig = pieces[piece].variants[rot].mask;
-
-  bool rankOverflow = false;
-  int rank = 0;
-  while (!rankOverflow) {
-    Bitset mask = orig << (rank * getSize());
-    tryMove(piece, mask, unavailable, stones, dest);
-
-    bool fileOverflow = false;
-    int file = 0;
-    while (!fileOverflow) {
-      mask <<= 1;
-
-      tryMove(piece, mask, unavailable, stones, dest);
-
-      file++;
-      fileOverflow = (mask & lastFile).any();
-    }
-
-    rank++;
-    rankOverflow = (mask & lastRank).any();
-  }
-}
-
-void Board::tryMove(int piece, Bitset& mask, Bitset& unavailable,
-                    Bitset& stones, MoveList& dest) {
-  if ((mask & stones).any() && (mask & unavailable).none()) {
-    dest.add(mask, piece);
-  }
 }
 
 void Board::makeMove(int player, Move& move) {
