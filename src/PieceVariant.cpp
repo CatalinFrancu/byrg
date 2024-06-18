@@ -1,7 +1,7 @@
 #include "PieceVariant.h"
 
 void PieceVariant::fromBitmap(Bitmap b, int boardSize) {
-  mask = 0;
+  mask.clear();
   int numBits = 0;
 
   for (int r = 0; b.pixels[r][0]; r++) {

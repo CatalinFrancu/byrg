@@ -1,6 +1,7 @@
 #pragma once
 
 #include "globals.h"
+#include "Bitset.h"
 #include "Move.h"
 
 class MoveList {
@@ -13,5 +14,5 @@ public:
   int player;
   int size;
 
-  void add(bitset& mask, int piece);
+  void add(Bitset& mask, int piece);
 };

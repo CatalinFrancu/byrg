@@ -1,6 +1,7 @@
 #pragma once
 
 #include "globals.h"
+#include "Bitset.h"
 #include "Move.h"
 #include "MoveList.h"
 #include "Piece.h"
@@ -25,12 +26,12 @@ public:
   u8 type;   // 2-player Duo or 4-player Classic
 
   // border masks to be used during the move generation
-  static bitset firstRank, lastRank, firstFile, lastFile;
+  static Bitset firstRank, lastRank, firstFile, lastFile;
 
   Piece pieces[NUM_PIECES];
 
   // occupancy per player
-  bitset occ[MAX_PLAYERS];
+  Bitset occ[MAX_PLAYERS];
 
   // bit masks of pieces still in hand
   int inHand[MAX_PLAYERS];
@@ -46,7 +47,7 @@ public:
   void genMoves(int player, MoveList& dest);
   void makeMove(int player, Move& move);
   void undoMove(int player, Move& move);
-  int getPieceFromMask(bitset mask);
+  int getPieceFromMask(Bitset mask);
   void print();
   void printBit(int bit);
 
@@ -54,10 +55,10 @@ private:
   void initBorderMasks();
   void initPlayerMasks();
   void initPieces();
-  void makeLandscape(int player, bitset& unavailable, bitset& stones);
-  bitset getStartingPos(int player);
-  void genMovesWithPiece(int player, int piece, int rot, bitset& unavailable,
-                         bitset& stones, MoveList& dest);
-  void tryMove(int piece, bitset& mask, bitset& unavailable,
-               bitset& stones, MoveList& dest);
+  void makeLandscape(int player, Bitset& unavailable, Bitset& stones);
+  Bitset getStartingPos(int player);
+  void genMovesWithPiece(int player, int piece, int rot, Bitset& unavailable,
+                         Bitset& stones, MoveList& dest);
+  void tryMove(int piece, Bitset& mask, Bitset& unavailable,
+               Bitset& stones, MoveList& dest);
 };

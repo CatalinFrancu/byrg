@@ -1,11 +1,11 @@
 #pragma once
 
-#include "globals.h"
+#include "Bitset.h"
 #include <string>
 
 class StrUtil {
 public:
   static void reverse(char* s);
-  static std::string moveToString(bitset& mask, int size);
-  static bitset stringToMove(std::string& move, int size);
+  static std::string moveToString(Bitset& mask, int size);
+  static Bitset stringToMove(std::string& move, int size);
 };

@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "MoveList.h"
 #include "Piece.h"
+#include <stdio.h>
 
 const int Board::SIZES[Board::NUM_TYPES] = { 14, 20 };
 const int Board::NUM_PLAYERS[Board::NUM_TYPES] = { 2, 4 };
@@ -12,10 +13,10 @@ const int Board::STARTING_POSITIONS[Board::NUM_TYPES][MAX_PLAYERS] = {
   { 380, 399, 19, 0 },
 };
 
-bitset Board::firstRank;
-bitset Board::lastRank;
-bitset Board::firstFile;
-bitset Board::lastFile;
+Bitset Board::firstRank;
+Bitset Board::lastRank;
+Bitset Board::firstFile;
+Bitset Board::lastFile;
 
 int Board::getSize() {
   return SIZES[type];
@@ -27,6 +28,7 @@ int Board::getNumPlayers() {
 
 void Board::init(int type) {
   this->type = type;
+  Bitset::setSize(getSize() * getSize());
   initBorderMasks();
   initPlayerMasks();
   initPieces();
@@ -44,7 +46,7 @@ void Board::initBorderMasks() {
 
 void Board::initPlayerMasks() {
   for (int i = 0; i < getNumPlayers(); i++) {
-    occ[i] = 0;
+    occ[i].clear();
     inHand[i] = (1 << NUM_PIECES) - 1;
   }
 }
@@ -67,8 +69,8 @@ void Board::initPieces() {
 Score Board::eval() {
   Score score;
   for (int i = 0; i < getNumPlayers(); i++) {
-    bitset unavailable;
-    bitset stones;
+    Bitset unavailable;
+    Bitset stones;
     makeLandscape(i, unavailable, stones);
     score.val[i] =
       occ[i].count() * COEF_POP +
@@ -82,8 +84,8 @@ void Board::genMoves(int player, MoveList& dest) {
   dest.size = 0;
 
   while (!dest.size && inactivePlayers < getNumPlayers()) {
-    bitset unavailable;
-    bitset stones;
+    Bitset unavailable;
+    Bitset stones;
     makeLandscape(player, unavailable, stones);
 
     int hand = inHand[player];
@@ -101,9 +103,9 @@ void Board::genMoves(int player, MoveList& dest) {
   }
 }
 
-void Board::makeLandscape(int player, bitset& unavailable, bitset& stones) {
-  unavailable.reset();
-  bitset& me = occ[player];
+void Board::makeLandscape(int player, Bitset& unavailable, Bitset& stones) {
+  unavailable.clear();
+  Bitset& me = occ[player];
   int size = getSize();
   int np = getNumPlayers();
 
@@ -130,21 +132,22 @@ void Board::makeLandscape(int player, bitset& unavailable, bitset& stones) {
   }
 }
 
-bitset Board::getStartingPos(int player) {
-  bitset result(0);
+Bitset Board::getStartingPos(int player) {
+  Bitset result;
+  result.clear();
   int pos = STARTING_POSITIONS[type][player];
-  result[pos] = true;
+  result.set(pos);
   return result;
 }
 
-void Board::genMovesWithPiece(int player, int piece, int rot, bitset& unavailable,
-                              bitset& stones, MoveList& dest) {
-  bitset& orig = pieces[piece].variants[rot].mask;
+void Board::genMovesWithPiece(int player, int piece, int rot, Bitset& unavailable,
+                              Bitset& stones, MoveList& dest) {
+  Bitset& orig = pieces[piece].variants[rot].mask;
 
   bool rankOverflow = false;
   int rank = 0;
   while (!rankOverflow) {
-    bitset mask = orig << (rank * getSize());
+    Bitset mask = orig << (rank * getSize());
     tryMove(piece, mask, unavailable, stones, dest);
 
     bool fileOverflow = false;
@@ -163,8 +166,8 @@ void Board::genMovesWithPiece(int player, int piece, int rot, bitset& unavailabl
   }
 }
 
-void Board::tryMove(int piece, bitset& mask, bitset& unavailable,
-                    bitset& stones, MoveList& dest) {
+void Board::tryMove(int piece, Bitset& mask, Bitset& unavailable,
+                    Bitset& stones, MoveList& dest) {
   if ((mask & stones).any() && (mask & unavailable).none()) {
     dest.add(mask, piece);
   }
@@ -180,7 +183,7 @@ void Board::undoMove(int player, Move& move) {
   makeMove(player, move);
 }
 
-int Board::getPieceFromMask(bitset mask) {
+int Board::getPieceFromMask(Bitset mask) {
   // Shift the mask towards the LSB
   while ((mask & firstRank).none()) {
     mask >>= getSize();
@@ -219,7 +222,7 @@ void Board::print() {
 
 void Board::printBit(int bit) {
   int p = 0;
-  while ((p < getNumPlayers()) && !occ[p][bit]) {
+  while ((p < getNumPlayers()) && !occ[p].get(bit)) {
     p++;
   }
 

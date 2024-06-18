@@ -5,11 +5,13 @@ project(
   VERSION 1.0
   LANGUAGES CXX)
 
-#include(GNUInstallDirs)
+set (CMAKE_CXX_STANDARD 20)
 
 set(SOURCES
     src/Bitmap.cpp
     src/Bitmap.h
+    src/Bitset.cpp
+    src/Bitset.h
     src/Board.cpp
     src/Board.h
     src/Clock.cpp
