@@ -1,65 +1,82 @@
 #include "Board.h"
 #include "MoveGenerator.h"
+#include <stdio.h>
 
-MoveGenerator::MoveGenerator(Board& b): board(b) {
-  size = 0;
+MoveGenerator::MoveGenerator(Board& b, int player):
+  board(b),
+  player(player) {
+  numMoves = 0;
+  boardSize = b.getSize();
 }
 
-void MoveGenerator::run(int player) {
+void MoveGenerator::run() {
   int inactivePlayers = 0;
 
-  while (!size && inactivePlayers < board.getNumPlayers()) {
-    Bitset stones;
-    board.makeLandscape(player, unavailable, stones);
+  while (!numMoves && (inactivePlayers < board.getNumPlayers())) {
+    runForPlayer();
 
-    int hand = board.inHand[player];
-    while (hand) {
-      int piece = __builtin_ctz(hand);
-      for (int rot = 0; rot < board.pieces[piece].numVariants; rot++) {
-        genMovesWithPiece(player, piece, rot, stones);
-      }
-      hand &= hand - 1;
+    if (!numMoves) {
+      player = (player + 1) % board.getNumPlayers();
+      inactivePlayers++;
     }
-
-    this->player = player;
-    player = (player + 1) % board.getNumPlayers();
-    inactivePlayers++;
   }
 }
 
-void MoveGenerator::genMovesWithPiece(int player, int piece, int rot, Bitset& stones) {
-  Bitset& orig = board.pieces[piece].variants[rot].mask;
+void MoveGenerator::runForPlayer() {
+  Bitset stones;
+  board.makeLandscape(player, unavailable, stones);
 
-  bool rankOverflow = false;
-  int rank = 0;
-  while (!rankOverflow) {
-    Bitset mask = orig << (rank * board.getSize());
-    tryMove(piece, mask, stones);
-
-    bool fileOverflow = false;
-    int file = 0;
-    while (!fileOverflow) {
-      mask <<= 1;
-
-      tryMove(piece, mask, stones);
-
-      file++;
-      fileOverflow = (mask & board.lastFile).any();
-    }
-
-    rank++;
-    rankOverflow = (mask & board.lastRank).any();
+  int stone;
+  while ((stone = stones.consumeBit()) != Bitset::NONE) {
+    runForPlayerStone(stone);
   }
 }
 
-void MoveGenerator::tryMove(int piece, Bitset& mask, Bitset& stones) {
-  if ((mask & stones).any() && (mask & unavailable).none()) {
-    add(mask, piece);
+void MoveGenerator::runForPlayerStone(int stone) {
+  int hand = board.inHand[player];
+  while (hand) {
+    int piece = __builtin_ctz(hand);
+    for (int var = 0; var < board.pieces[piece].numVariants; var++) {
+      runForPlayerStoneVariant(stone, piece, var);
+    }
+    hand &= hand - 1;
+  }
+}
+
+void MoveGenerator::runForPlayerStoneVariant(int stone, int piece, int var) {
+  Piece& p = board.pieces[piece];
+  PieceVariant& v = p.variants[var];
+  int srow = stone / boardSize;
+  int scol = stone % boardSize;
+
+  for (int i = 0; i < p.size; i++) {
+    int cell = v.bits[i];
+    // Check whether we can translate @var to overlap @cell and @stone.
+    int crow = cell / boardSize;
+    int ccol = cell % boardSize;
+
+    if ((srow >= crow) &&
+        (srow <= boardSize - v.height + crow) &&
+        (scol >= ccol) &&
+        (scol <= boardSize - v.width + ccol)) {
+      runForPlayerStoneVariantShift(piece, var, stone - cell);
+    }
+  }
+}
+
+void MoveGenerator::runForPlayerStoneVariantShift(int piece, int var, int shift) {
+  Piece& p = board.pieces[piece];
+  PieceVariant& v = p.variants[var];
+
+  Bitset b = v.mask << shift;
+
+  if ((b & unavailable).none()) {
+    add(b, piece);
   }
 }
 
 void MoveGenerator::add(Bitset& mask, int piece) {
-  moves[size].mask = mask;
-  moves[size].piece = piece;
-  size++;
+  moves[numMoves].mask = mask;
+  moves[numMoves].piece = piece;
+  numMoves++;
 }

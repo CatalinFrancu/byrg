@@ -9,6 +9,7 @@ public:
   void copyFrom(Bitmap src);
   void rotate();
   void mirror();
+  int getSize();
 };
 
 const Bitmap BITMAPS[NUM_PIECES] = {

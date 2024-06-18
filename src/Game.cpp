@@ -43,10 +43,10 @@ SearchResult Game::minimax(int player, int depth) {
     return best;
   }
 
-  MoveGenerator gen(board);
-  gen.run(player);
+  MoveGenerator gen(board, player);
+  gen.run();
 
-  if (!gen.size) {
+  if (!gen.numMoves) {
     best.score = board.eval();
     return best;
   }
@@ -54,7 +54,7 @@ SearchResult Game::minimax(int player, int depth) {
 
   best = SearchResult::minusInfinity();
 
-  for (int i = 0; i < gen.size; i++) {
+  for (int i = 0; i < gen.numMoves; i++) {
     Move& mv = gen.moves[i];
     board.makeMove(player, mv);
     SearchResult sr = minimax((player + 1) % board.getNumPlayers(), depth - 1);

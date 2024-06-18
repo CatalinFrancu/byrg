@@ -36,3 +36,13 @@ void Bitmap::mirror() {
     StrUtil::reverse(pixels[r]);
   }
 }
+
+int Bitmap::getSize() {
+  int result = 0;
+  for (int r = 0; pixels[r][0]; r++) {
+    for (int c = 0; pixels[r][c]; c++) {
+      result += (pixels[r][c] == '*');
+    }
+  }
+  return result;
+}

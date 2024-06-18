@@ -1,6 +1,7 @@
 #include "Piece.h"
 
 void Piece::considerBitmap(Bitmap bitmap, int boardSize) {
+  size = bitmap.getSize();
   variants[numVariants].fromBitmap(bitmap, boardSize);
 
   // Check if the new bitset is distinct from all the others
