@@ -40,6 +40,21 @@ void Bitset::clear() {
   memset(buf, 0, sizeof(buf));
 }
 
+int Bitset::consumeBit() {
+  int pos = 0;
+  while ((pos <= whole) && !buf[pos]) {
+    pos++;
+  }
+
+  if (pos > whole) {
+    return NONE;
+  }
+
+  int ret = 64 * pos + __builtin_ctzll(buf[pos]);
+  buf[pos] &= buf[pos] - 1;
+  return ret;
+}
+
 bool Bitset::operator==(Bitset other) {
   int i = 0;
   while ((i < whole) && (buf[i] == other.buf[i])) {

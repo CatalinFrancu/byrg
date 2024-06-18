@@ -4,6 +4,8 @@
 
 class Bitset {
 public:
+  static const int NONE = -1;
+
   // All Bitsets have the same size.
   static int size, whole, part;
 
@@ -15,6 +17,11 @@ public:
   bool any();
   bool none();
   void clear();
+
+  // Finds, clears and returns the least significant set bit, or -1 if the
+  // bitset is empty.
+  int consumeBit();
+
   bool operator==(Bitset other);
   Bitset operator&(Bitset other);
   Bitset operator|(Bitset other);
