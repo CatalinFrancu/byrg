@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PATH_TO_TWOGTP="/path/to/pentobi/twogtp/twogtp"
-PATH_TO_PENTOBI="/path/to/pentobi_gtp/pentobi-gtp --nobook"
+PATH_TO_PENTOBI="/path/to/pentobi/pentobi_gtp/pentobi-gtp --nobook"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 PATH_TO_US="$SCRIPT_DIR/byrg"
 
