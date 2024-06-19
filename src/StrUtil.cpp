@@ -1,4 +1,5 @@
 #include "Bitset.h"
+#include "globals.h"
 #include <string>
 #include <string.h>
 #include "StrUtil.h"
@@ -15,11 +16,11 @@ void StrUtil::reverse(char* s) {
 }
 
 // TODO: This is O(n), should be O(number of bits set)
-std::string StrUtil::moveToString(Bitset& mask, int size) {
+std::string StrUtil::moveToString(Bitset& mask) {
   std::string result = "";
-  for (int rank = 0; rank < size; rank++) {
-    for (int file = 0; file < size; file++) {
-      if (mask.get(rank * size + file)) {
+  for (int rank = 0; rank < BOARD_SIZE; rank++) {
+    for (int file = 0; file < BOARD_SIZE; file++) {
+      if (mask.get(rank * BOARD_SIZE + file)) {
         if (result > "") {
           result += ',';
         }
@@ -31,7 +32,7 @@ std::string StrUtil::moveToString(Bitset& mask, int size) {
   return result;
 }
 
-Bitset StrUtil::stringToMove(std::string& move, int size) {
+Bitset StrUtil::stringToMove(std::string& move) {
   Bitset mask;
   mask.clear();
 
@@ -43,7 +44,7 @@ Bitset StrUtil::stringToMove(std::string& move, int size) {
       rank = rank * 10 + (move[p++] - '0');
     }
     rank--; // 0-based
-    mask.set(rank * size + file);
+    mask.set(rank * BOARD_SIZE + file);
     if (p < len) {
       p++; // skip the comma
     }

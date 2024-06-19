@@ -4,8 +4,6 @@
 
 SearchResult SearchResult::minusInfinity() {
   SearchResult res;
-  for (int i = 0; i < MAX_PLAYERS; i++) {
-    res.score.val[i] = -Score::INFINITY;
-  }
+  res.score.val[0] = res.score.val[1] = -Score::INFINITY;
   return res;
 }

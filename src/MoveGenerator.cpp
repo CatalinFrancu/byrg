@@ -6,19 +6,13 @@ MoveGenerator::MoveGenerator(Board& b, int player):
   board(b),
   player(player) {
   numMoves = 0;
-  boardSize = b.getSize();
 }
 
 void MoveGenerator::run() {
-  int inactivePlayers = 0;
-
-  while (!numMoves && (inactivePlayers < board.getNumPlayers())) {
+  runForPlayer();
+  if (!numMoves) {
+    player = 1 - player;
     runForPlayer();
-
-    if (!numMoves) {
-      player = (player + 1) % board.getNumPlayers();
-      inactivePlayers++;
-    }
   }
 }
 
@@ -46,19 +40,19 @@ void MoveGenerator::runForPlayerStone(int stone) {
 void MoveGenerator::runForPlayerStoneVariant(int stone, int piece, int var) {
   Piece& p = board.pieces[piece];
   PieceVariant& v = p.variants[var];
-  int srow = stone / boardSize;
-  int scol = stone % boardSize;
+  int srow = stone / BOARD_SIZE;
+  int scol = stone % BOARD_SIZE;
 
   for (int i = 0; i < p.size; i++) {
     int cell = v.bits[i];
     // Check whether we can translate @var to overlap @cell and @stone.
-    int crow = cell / boardSize;
-    int ccol = cell % boardSize;
+    int crow = cell / BOARD_SIZE;
+    int ccol = cell % BOARD_SIZE;
 
     if ((srow >= crow) &&
-        (srow <= boardSize - v.height + crow) &&
+        (srow <= BOARD_SIZE - v.height + crow) &&
         (scol >= ccol) &&
-        (scol <= boardSize - v.width + ccol)) {
+        (scol <= BOARD_SIZE - v.width + ccol)) {
       runForPlayerStoneVariantShift(piece, var, stone - cell);
     }
   }

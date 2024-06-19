@@ -11,7 +11,6 @@ public:
   static const int MAX_MOVES = 1'000;
 
   Board& board;
-  int boardSize; // syntactic sugar
   Move moves[MAX_MOVES];
   int player;
   int numMoves;

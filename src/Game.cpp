@@ -8,10 +8,7 @@
 
 bool Game::setType(std::string desc) {
   if (desc == "Blokus Duo") {
-    restart(Board::T_DUO);
-    return true;
-  } else if (desc == "Blokus") {
-    restart(Board::T_CLASSIC);
+    restart();
     return true;
   } else {
     return false;
@@ -19,18 +16,14 @@ bool Game::setType(std::string desc) {
 }
 
 void Game::restart() {
-  restart(board.type);
-}
-
-void Game::restart(int boardType) {
-  board.init(boardType);
+  board.init();
 }
 
 std::string Game::findMove(int player) {
   clock.start();
   SearchResult sr = minimax(player, 2);
   board.makeMove(player, sr.move);
-  std::string str = StrUtil::moveToString(sr.move.mask, board.getSize());
+  std::string str = StrUtil::moveToString(sr.move.mask);
   clock.stop();
 
   return str;
@@ -57,7 +50,7 @@ SearchResult Game::minimax(int player, int depth) {
   for (int i = 0; i < gen.numMoves; i++) {
     Move& mv = gen.moves[i];
     board.makeMove(player, mv);
-    SearchResult sr = minimax((player + 1) % board.getNumPlayers(), depth - 1);
+    SearchResult sr = minimax(1 - player, depth - 1);
     if (sr.score.val[player] > best.score.val[player]) {
       best = { mv, sr.score };
     }
@@ -69,7 +62,7 @@ SearchResult Game::minimax(int player, int depth) {
 
 void Game::makeMove(int player, std::string move) {
   Move m;
-  m.mask = StrUtil::stringToMove(move, board.getSize());
+  m.mask = StrUtil::stringToMove(move);
   m.piece = board.getPieceFromMask(m.mask);
   board.makeMove(player, m);
 }

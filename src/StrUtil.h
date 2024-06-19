@@ -6,6 +6,6 @@
 class StrUtil {
 public:
   static void reverse(char* s);
-  static std::string moveToString(Bitset& mask, int size);
-  static Bitset stringToMove(std::string& move, int size);
+  static std::string moveToString(Bitset& mask);
+  static Bitset stringToMove(std::string& move);
 };

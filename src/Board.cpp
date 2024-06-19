@@ -5,36 +5,19 @@
 #include "Piece.h"
 #include <stdio.h>
 
-const int Board::SIZES[Board::NUM_TYPES] = { 14, 20 };
-const int Board::NUM_PLAYERS[Board::NUM_TYPES] = { 2, 4 };
-const int Board::STARTING_POSITIONS[Board::NUM_TYPES][MAX_PLAYERS] = {
-  { 130, 65 },
-  { 380, 399, 19, 0 },
-};
-
 Bitset Board::firstRank;
 Bitset Board::lastRank;
 Bitset Board::firstFile;
 Bitset Board::lastFile;
 
-int Board::getSize() {
-  return SIZES[type];
-}
-
-int Board::getNumPlayers() {
-  return NUM_PLAYERS[type];
-}
-
-void Board::init(int type) {
-  this->type = type;
-  Bitset::setSize(getSize() * getSize());
+void Board::init() {
   initBorderMasks();
   initPlayerMasks();
   initPieces();
 }
 
 void Board::initBorderMasks() {
-  int size = getSize();
+  int size = BOARD_SIZE;
   for (int i = 0; i < size; i++) {
     firstRank.set(i);
     lastRank.set(size * (size - 1) + i);
@@ -44,10 +27,9 @@ void Board::initBorderMasks() {
 }
 
 void Board::initPlayerMasks() {
-  for (int i = 0; i < getNumPlayers(); i++) {
-    occ[i].clear();
-    inHand[i] = (1 << NUM_PIECES) - 1;
-  }
+  occ[0].clear();
+  occ[1].clear();
+  inHand[0] = inHand[1] = (1 << NUM_PIECES) - 1;
 }
 
 void Board::initPieces() {
@@ -57,7 +39,7 @@ void Board::initPieces() {
     bitmap.copyFrom(BITMAPS[i]);
     for (int mir = 0; mir < 2; mir++) {
       for (int rot = 0; rot < 4; rot++) {
-        pieces[i].considerBitmap(bitmap, getSize());
+        pieces[i].considerBitmap(bitmap, BOARD_SIZE);
         bitmap.rotate();
       }
       bitmap.mirror();
@@ -67,7 +49,7 @@ void Board::initPieces() {
 
 Score Board::eval() {
   Score score;
-  for (int i = 0; i < getNumPlayers(); i++) {
+  for (int i = 0; i < 2; i++) {
     Bitset unavailable;
     Bitset stones;
     makeLandscape(i, unavailable, stones);
@@ -79,15 +61,11 @@ Score Board::eval() {
 }
 
 void Board::makeLandscape(int player, Bitset& unavailable, Bitset& stones) {
-  unavailable.clear();
   Bitset& me = occ[player];
-  int size = getSize();
-  int np = getNumPlayers();
+  int size = BOARD_SIZE;
 
   // Squares occupied by any player are unavailable.
-  for (int i = 0; i < np; i++) {
-    unavailable |= occ[i];
-  }
+  unavailable = occ[0] | occ[1];
 
   // Squares adjacent to my pieces are unavailable.
   unavailable |= (me & ~firstRank) >> size;
@@ -110,7 +88,7 @@ void Board::makeLandscape(int player, Bitset& unavailable, Bitset& stones) {
 Bitset Board::getStartingPos(int player) {
   Bitset result;
   result.clear();
-  int pos = STARTING_POSITIONS[type][player];
+  int pos = STARTING_POSITIONS[player];
   result.set(pos);
   return result;
 }
@@ -128,7 +106,7 @@ void Board::undoMove(int player, Move& move) {
 int Board::getPieceFromMask(Bitset mask) {
   // Shift the mask towards the LSB
   while ((mask & firstRank).none()) {
-    mask >>= getSize();
+    mask >>= BOARD_SIZE;
   }
   while ((mask & firstFile).none()) {
     mask >>= 1;
@@ -145,7 +123,7 @@ int Board::getPieceFromMask(Bitset mask) {
 }
 
 void Board::print() {
-  int size = getSize();
+  int size = BOARD_SIZE;
   for (int rank = size - 1; rank >= 0; rank--) {
     printf("%2d ", rank + 1);
     for (int file = 0; file < size; file++) {
@@ -164,11 +142,11 @@ void Board::print() {
 
 void Board::printBit(int bit) {
   int p = 0;
-  while ((p < getNumPlayers()) && !occ[p].get(bit)) {
+  while ((p < 2) && !occ[p].get(bit)) {
     p++;
   }
 
-  if (p == getNumPlayers()) {
+  if (p == 2) {
     printf("  ");
   } else {
     printf("%s  %s", ANSI_COLORS[p], DEFAULT_COLOR);

@@ -4,12 +4,11 @@
 
 class Bitset {
 public:
-  static const int NONE = -1;
-
   // All Bitsets have the same size.
-  static int size, whole, part;
-
-  static void setSize(int size);
+  static const int SIZE = BOARD_SIZE * BOARD_SIZE;
+  static const int WHOLE = SIZE / 64;
+  static const int PART = SIZE % 64;
+  static const int NONE = -1;
 
   void set(int pos);
   bool get(int pos);
@@ -36,5 +35,5 @@ public:
   void print(int width);
 
 private:
-  u64 buf[MAX_CELLS / 64 + 1];
+  u64 buf[WHOLE + 1];
 };
