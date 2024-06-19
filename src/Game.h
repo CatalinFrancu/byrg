@@ -7,8 +7,11 @@
 
 class Game {
 public:
+  PieceSet pieceSet;
   Board board;
   Clock clock;
+
+  Game();
 
   bool setType(std::string desc);
   void restart();

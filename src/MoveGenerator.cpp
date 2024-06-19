@@ -30,7 +30,7 @@ void MoveGenerator::runForPlayerStone(int stone) {
   int hand = board.inHand[player];
   while (hand) {
     int piece = __builtin_ctz(hand);
-    for (int var = 0; var < board.pieces[piece].numVariants; var++) {
+    for (int var = 0; var < board.pieceSet->pieces[piece].numVariants; var++) {
       runForPlayerStoneVariant(stone, piece, var);
     }
     hand &= hand - 1;
@@ -38,7 +38,7 @@ void MoveGenerator::runForPlayerStone(int stone) {
 }
 
 void MoveGenerator::runForPlayerStoneVariant(int stone, int piece, int var) {
-  Piece& p = board.pieces[piece];
+  Piece& p = board.pieceSet->pieces[piece];
   PieceVariant& v = p.variants[var];
   int srow = stone / BOARD_SIZE;
   int scol = stone % BOARD_SIZE;
@@ -59,7 +59,7 @@ void MoveGenerator::runForPlayerStoneVariant(int stone, int piece, int var) {
 }
 
 void MoveGenerator::runForPlayerStoneVariantShift(int piece, int var, int shift) {
-  Piece& p = board.pieces[piece];
+  Piece& p = board.pieceSet->pieces[piece];
   PieceVariant& v = p.variants[var];
 
   Bitset b = v.mask << shift;

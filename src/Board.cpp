@@ -2,7 +2,7 @@
 #include "Bitmap.h"
 #include "Board.h"
 #include "globals.h"
-#include "Piece.h"
+#include "PieceSet.h"
 #include <stdio.h>
 
 Bitset Board::firstRank;
@@ -13,7 +13,6 @@ Bitset Board::lastFile;
 void Board::init() {
   initBorderMasks();
   initPlayerMasks();
-  initPieces();
 }
 
 void Board::initBorderMasks() {
@@ -30,21 +29,6 @@ void Board::initPlayerMasks() {
   occ[0].clear();
   occ[1].clear();
   inHand[0] = inHand[1] = (1 << NUM_PIECES) - 1;
-}
-
-void Board::initPieces() {
-  Bitmap bitmap;
-  for (int i = 0; i < NUM_PIECES; i++) {
-    pieces[i].numVariants = 0;
-    bitmap.copyFrom(BITMAPS[i]);
-    for (int mir = 0; mir < 2; mir++) {
-      for (int rot = 0; rot < 4; rot++) {
-        pieces[i].considerBitmap(bitmap, BOARD_SIZE);
-        bitmap.rotate();
-      }
-      bitmap.mirror();
-    }
-  }
 }
 
 Score Board::eval() {
@@ -113,8 +97,9 @@ int Board::getPieceFromMask(Bitset mask) {
   }
 
   for (int p = 0; p < NUM_PIECES; p++) {
-    for (int rot = 0; rot < pieces[p].numVariants; rot++) {
-      if (pieces[p].variants[rot].mask == mask) {
+    Piece& piece = pieceSet->pieces[p];
+    for (int rot = 0; rot < piece.numVariants; rot++) {
+      if (piece.variants[rot].mask == mask) {
         return p;
       }
     }

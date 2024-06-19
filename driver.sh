@@ -7,16 +7,16 @@ PATH_TO_US="$SCRIPT_DIR/byrg"
 
 rm -rf output.dat output.blksgf
 
-# Four player
-$PATH_TO_TWOGTP \
-  --blue $PATH_TO_US \
-  --yellow $PATH_TO_PENTOBI \
-  --red $PATH_TO_PENTOBI \
-  --green $PATH_TO_PENTOBI \
-  -g classic
-
 # Two player
-# $PATH_TO_TWOGTP \
-#   --black $PATH_TO_US \
-#   --white $PATH_TO_PENTOBI \
-#   -g duo
+$PATH_TO_TWOGTP \
+  --black $PATH_TO_US \
+  --white $PATH_TO_PENTOBI \
+  -g duo
+
+# Four player
+#$PATH_TO_TWOGTP \
+#  --blue $PATH_TO_US \
+#  --yellow $PATH_TO_PENTOBI \
+#  --red $PATH_TO_PENTOBI \
+#  --green $PATH_TO_PENTOBI \
+#  -g classic

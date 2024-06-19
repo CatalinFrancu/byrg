@@ -6,13 +6,13 @@
 #include <string>
 #include "StrUtil.h"
 
+Game::Game() {
+  pieceSet.precompute();
+  board.pieceSet = &pieceSet;
+}
+
 bool Game::setType(std::string desc) {
-  if (desc == "Blokus Duo") {
-    restart();
-    return true;
-  } else {
-    return false;
-  }
+  return (desc == "Blokus Duo");
 }
 
 void Game::restart() {

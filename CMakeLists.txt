@@ -27,6 +27,8 @@ set(SOURCES
     src/MoveGenerator.h
     src/Piece.cpp
     src/Piece.h
+    src/PieceSet.cpp
+    src/PieceSet.h
     src/PieceVariant.cpp
     src/PieceVariant.h
     src/Response.cpp

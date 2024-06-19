@@ -3,7 +3,7 @@
 #include "globals.h"
 #include "Bitset.h"
 #include "Move.h"
-#include "Piece.h"
+#include "PieceSet.h"
 #include "Score.h"
 
 class Board {
@@ -19,8 +19,7 @@ public:
 
   // border masks to be used during the move generation
   static Bitset firstRank, lastRank, firstFile, lastFile;
-
-  Piece pieces[NUM_PIECES];
+  PieceSet* pieceSet;
 
   // occupancy per player
   Bitset occ[2];
@@ -43,5 +42,4 @@ public:
 private:
   void initBorderMasks();
   void initPlayerMasks();
-  void initPieces();
 };
