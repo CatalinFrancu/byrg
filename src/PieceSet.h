@@ -12,7 +12,7 @@ public:
   // For every piece and every cell on the board, store the indices of the
   // variants that can cover that cells.
   // TODO: is u16 sufficient?
-  int placements[NUM_PIECES][PADDED_BOARD_SIZE][PADDED_BOARD_SIZE]
+  short placements[NUM_PIECES][PADDED_BOARD_SIZE][PADDED_BOARD_SIZE]
   [MAX_PIECE_SIZE * MAX_PIECE_VARIANTS];
   int numPlacements[NUM_PIECES][PADDED_BOARD_SIZE][PADDED_BOARD_SIZE];
 

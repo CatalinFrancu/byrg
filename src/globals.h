@@ -12,4 +12,4 @@ const int MAX_STONES = 50; // TBD what is realistic
 
 // all rotations, mirrors and shifts of all pieces
 const int MAX_PIECE_VARIANTS = 8;
-const int MAX_VARIANTS = 200'000;
+const int MAX_VARIANTS = 14'000; // determined experimentally
