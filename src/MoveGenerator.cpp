@@ -17,60 +17,34 @@ void MoveGenerator::run() {
 }
 
 void MoveGenerator::runForPlayer() {
-  Bitset stones;
-  board.makeLandscape(player, unavailable, stones);
+  numStones = board.collectStones(player, stones);
 
-  int stone;
-  while ((stone = stones.consumeBit()) != Bitset::NONE) {
-    runForPlayerStone(stone);
-  }
-}
-
-void MoveGenerator::runForPlayerStone(int stone) {
   int hand = board.inHand[player];
   while (hand) {
     int piece = __builtin_ctz(hand);
-    for (int var = 0; var < board.pieceSet->pieces[piece].numVariants; var++) {
-      runForPlayerStoneVariant(stone, piece, var);
-    }
+    runForPlayerPiece(piece);
     hand &= hand - 1;
   }
 }
 
-void MoveGenerator::runForPlayerStoneVariant(int stone, int piece, int var) {
-  Piece& p = board.pieceSet->pieces[piece];
-  PieceVariant& v = p.variants[var];
-  int srow = stone / BOARD_SIZE;
-  int scol = stone % BOARD_SIZE;
-
-  for (int i = 0; i < p.size; i++) {
-    int cell = v.bits[i];
-    // Check whether we can translate @var to overlap @cell and @stone.
-    int crow = cell / BOARD_SIZE;
-    int ccol = cell % BOARD_SIZE;
-
-    if ((srow >= crow) &&
-        (srow <= BOARD_SIZE - v.height + crow) &&
-        (scol >= ccol) &&
-        (scol <= BOARD_SIZE - v.width + ccol)) {
-      runForPlayerStoneVariantShift(piece, var, stone - cell);
-    }
+void MoveGenerator::runForPlayerPiece(int piece) {
+  for (int i = 0; i < numStones; i++) {
+    runForPlayerPieceStone(piece, stones[i]);
   }
 }
 
-void MoveGenerator::runForPlayerStoneVariantShift(int piece, int var, int shift) {
-  Piece& p = board.pieceSet->pieces[piece];
-  PieceVariant& v = p.variants[var];
-
-  Bitset b = v.mask << shift;
-
-  if ((b & unavailable).none()) {
-    add(b, piece);
+void MoveGenerator::runForPlayerPieceStone(int piece, Cell stone) {
+  PieceSet* ps = board.pieceSet;
+  int n = ps->numPlacements[piece][stone.r][stone.c];
+  for (int i = 0; i < n; i++) {
+    int placement = ps->placements[piece][stone.r][stone.c][i];
+    tryPlacement(piece, placement);
   }
 }
 
-void MoveGenerator::add(Bitset& mask, int piece) {
-  moves[numMoves].mask = mask;
-  moves[numMoves].piece = piece;
-  numMoves++;
+void MoveGenerator::tryPlacement(u8 piece, int varId) {
+  PieceVariant& var = board.pieceSet->variants[varId];
+  if (board.accommodates(var, player)) {
+    moves[numMoves++] = { varId, piece };
+  }
 }

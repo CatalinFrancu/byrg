@@ -21,9 +21,11 @@ void Game::restart() {
 
 std::string Game::findMove(int player) {
   clock.start();
+  //  board.print();
   SearchResult sr = minimax(player, 2);
   board.makeMove(player, sr.move);
-  std::string str = StrUtil::moveToString(sr.move.mask);
+  PieceVariant pv = pieceSet.variants[sr.move.variant];
+  std::string str = pv.toString();
   clock.stop();
 
   return str;
@@ -61,8 +63,9 @@ SearchResult Game::minimax(int player, int depth) {
 }
 
 void Game::makeMove(int player, std::string move) {
-  Move m;
-  m.mask = StrUtil::stringToMove(move);
-  m.piece = board.getPieceFromMask(m.mask);
+  PieceVariant pv;
+  pv.fromString(move);
+
+  Move m = pieceSet.find(pv);
   board.makeMove(player, m);
 }

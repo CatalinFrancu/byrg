@@ -5,8 +5,9 @@
 
 class Piece {
 public:
-  PieceVariant variants[MAX_VARIANTS];
-  int size, numVariants;
+  // Keep track of the distinct variants encountered so far
+  PieceVariant variants[MAX_PIECE_VARIANTS];
+  int numVariants;
 
-  void considerBitmap(Bitmap bitmap, int boardSize);
+  bool addIfDistinct(PieceVariant var);
 };

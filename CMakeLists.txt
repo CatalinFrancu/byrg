@@ -10,10 +10,9 @@ set (CMAKE_CXX_STANDARD 20)
 set(SOURCES
     src/Bitmap.cpp
     src/Bitmap.h
-    src/Bitset.cpp
-    src/Bitset.h
     src/Board.cpp
     src/Board.h
+    src/Cell.h
     src/Clock.cpp
     src/Clock.h
     src/Command.cpp

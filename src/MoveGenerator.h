@@ -1,21 +1,20 @@
 #pragma once
 
 #include "globals.h"
-#include "Bitset.h"
 #include "Board.h"
 #include "Move.h"
 
 class MoveGenerator {
 public:
   // TBD what is reasonable
-  static const int MAX_MOVES = 1'000;
+  static const int MAX_MOVES = 3'000;
 
   Board& board;
   Move moves[MAX_MOVES];
+  Cell stones[MAX_STONES];
+  int numStones;
   int player;
   int numMoves;
-
-  Bitset unavailable; // to the current player
 
   MoveGenerator(Board& board, int player);
 
@@ -25,9 +24,7 @@ public:
 
 private:
   void runForPlayer();
-  void runForPlayerStone(int stone);
-  void runForPlayerStoneVariant(int stone, int piece, int var);
-  void runForPlayerStoneVariantShift(int piece, int var, int shift);
-  void add(Bitset& mask, int piece);
-
+  void runForPlayerPiece(int piece);
+  void runForPlayerPieceStone(int piece, Cell stone);
+  void tryPlacement(u8 piece, int varId);
 };
