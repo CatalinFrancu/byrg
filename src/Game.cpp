@@ -53,7 +53,7 @@ SearchResult Game::minimax(int player, int depth) {
     Move& mv = gen.moves[i];
     board.makeMove(player, mv);
     SearchResult sr = minimax(1 - player, depth - 1);
-    if (sr.score.val[player] > best.score.val[player]) {
+    if (sr.score > best.score) {
       best = { mv, sr.score };
     }
     board.undoMove(player, mv);

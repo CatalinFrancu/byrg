@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Move.h"
-#include "Score.h"
 
 class SearchResult {
 public:
+  static const int INFINITY = 2'000'000'000;
   Move move;
-  Score score;
+  int score;
 
   static SearchResult minusInfinity();
 };

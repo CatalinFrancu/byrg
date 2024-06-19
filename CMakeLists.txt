@@ -32,7 +32,6 @@ set(SOURCES
     src/PieceVariant.h
     src/Response.cpp
     src/Response.h
-    src/Score.h
     src/SearchResult.cpp
     src/SearchResult.h
     src/StrUtil.cpp

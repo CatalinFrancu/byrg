@@ -4,7 +4,6 @@
 #include "Cell.h"
 #include "Move.h"
 #include "PieceSet.h"
-#include "Score.h"
 
 class Board {
 public:
@@ -28,7 +27,7 @@ public:
 
   void init();
 
-  Score eval();
+  int eval();
 
   void setArea(int val, Move& move);
   void makeMove(int player, Move& move);

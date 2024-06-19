@@ -22,10 +22,8 @@ void Board::initPlayerMasks() {
   inHand[0] = inHand[1] = (1 << NUM_PIECES) - 1;
 }
 
-Score Board::eval() {
-  Score score;
-  score.val[0] = score.val[1] = 0;
-  return score;
+int Board::eval() {
+  return 0;
 }
 
 void Board::setArea(int val, Move& move) {
