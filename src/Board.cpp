@@ -110,19 +110,19 @@ int Board::getPieceFromMask(Bitset mask) {
 void Board::print() {
   int size = BOARD_SIZE;
   for (int rank = size - 1; rank >= 0; rank--) {
-    printf("%2d ", rank + 1);
+    fprintf(stderr, "%2d ", rank + 1);
     for (int file = 0; file < size; file++) {
       int bit = rank * size + file;
       printBit(bit);
     }
-    printf("\n");
+    fprintf(stderr, "\n");
   }
 
-  printf("   ");
+  fprintf(stderr, "   ");
   for (int file = 0; file < size; file++) {
-    printf(" %c", file + 'a');
+    fprintf(stderr, " %c", file + 'a');
   }
-  printf("\n");
+  fprintf(stderr, "\n");
 }
 
 void Board::printBit(int bit) {
@@ -132,8 +132,8 @@ void Board::printBit(int bit) {
   }
 
   if (p == 2) {
-    printf("  ");
+    fprintf(stderr, "  ");
   } else {
-    printf("%s  %s", ANSI_COLORS[p], DEFAULT_COLOR);
+    fprintf(stderr, "%s  %s", ANSI_COLORS[p], DEFAULT_COLOR);
   }
 }
