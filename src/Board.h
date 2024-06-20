@@ -4,7 +4,6 @@
 #include "Bitset.h"
 #include "Move.h"
 #include "PieceSet.h"
-#include "Score.h"
 
 class Board {
 public:
@@ -31,7 +30,8 @@ public:
 
   void makeLandscape(int player, Bitset& unavailable, Bitset& stones);
   Bitset getStartingPos(int player);
-  Score eval();
+  int eval(int player);
+  int sideEval(int player);
 
   void makeMove(int player, Move& move);
   void undoMove(int player, Move& move);

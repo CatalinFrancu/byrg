@@ -34,7 +34,7 @@ std::string Game::findMove(int player) {
 SearchResult Game::minimax(int player, int depth) {
   SearchResult best;
   if (depth == 0) {
-    best.score = board.eval();
+    best.score = board.eval(player);
     return best;
   }
 
@@ -42,7 +42,7 @@ SearchResult Game::minimax(int player, int depth) {
   gen.run();
 
   if (!gen.numMoves) {
-    best.score = board.eval();
+    best.score = board.eval(player);
     return best;
   }
   player = gen.player; // not necessarily the same
@@ -53,8 +53,8 @@ SearchResult Game::minimax(int player, int depth) {
     Move& mv = gen.moves[i];
     board.makeMove(player, mv);
     SearchResult sr = minimax(1 - player, depth - 1);
-    if (sr.score.val[player] > best.score.val[player]) {
-      best = { mv, sr.score };
+    if (-sr.score > best.score) {
+      best = { mv, -sr.score };
     }
     board.undoMove(player, mv);
   }

@@ -31,17 +31,16 @@ void Board::initPlayerMasks() {
   inHand[0] = inHand[1] = (1 << NUM_PIECES) - 1;
 }
 
-Score Board::eval() {
-  Score score;
-  for (int i = 0; i < 2; i++) {
-    Bitset unavailable;
-    Bitset stones;
-    makeLandscape(i, unavailable, stones);
-    score.val[i] =
-      occ[i].count() * COEF_POP +
-      stones.count() * COEF_STONES;
-  }
-  return score;
+int Board::eval(int player) {
+  return sideEval(player) - sideEval(1 - player);
+}
+
+int Board::sideEval(int player) {
+  Bitset unavailable;
+  Bitset stones;
+  makeLandscape(player, unavailable, stones);
+  return occ[player].count() * COEF_POP
+      + stones.count() * COEF_STONES;
 }
 
 void Board::makeLandscape(int player, Bitset& unavailable, Bitset& stones) {
