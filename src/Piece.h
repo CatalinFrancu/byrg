@@ -5,8 +5,9 @@
 
 class Piece {
 public:
-  PieceVariant variants[MAX_VARIANTS];
-  int size, numVariants;
+  // All distinct variants of this piece (up to 8).
+  PieceVariant variants[MAX_PIECE_VARIANTS];
+  int numVariants;
 
-  void considerBitmap(Bitmap bitmap);
+  bool addIfDistinct(PieceVariant var);
 };

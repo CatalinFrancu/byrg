@@ -17,31 +17,34 @@ void MoveGenerator::run() {
 }
 
 void MoveGenerator::runForPlayer() {
-  Bitset stones;
-  board.makeLandscape(player, unavailable, stones);
+  numStones = board.collectStones(player, stones);
 
-  int stone;
-  while ((stone = stones.consumeBit()) != Bitset::NONE) {
-    runForPlayerStone(stone);
-  }
-}
-
-void MoveGenerator::runForPlayerStone(int stone) {
   int hand = board.inHand[player];
   while (hand) {
     int piece = __builtin_ctz(hand);
-    int numShifts = board.pieceSet->numShifts[piece][stone];
-    for (int i = 0; i < numShifts; i++) {
-      runForPlayerStoneShift(piece, stone, i);
-    }
+    runForPlayerPiece(piece);
     hand &= hand - 1;
   }
 }
 
-void MoveGenerator::runForPlayerStoneShift(int piece, int stone, int shift) {
-  Bitset& b = board.pieceSet->shiftedMasks[piece][stone][shift];
+void MoveGenerator::runForPlayerPiece(int piece) {
+  for (int i = 0; i < numStones; i++) {
+    runForPlayerPieceStone(piece, stones[i]);
+  }
+}
 
-  if ((b & unavailable).none()) {
-    moves[numMoves++] = { b, (u8)piece };
+void MoveGenerator::runForPlayerPieceStone(int piece, Cell stone) {
+  PieceSet* ps = board.pieceSet;
+  int n = ps->numPlacements[piece][stone.r][stone.c];
+  for (int i = 0; i < n; i++) {
+    int placement = ps->placements[piece][stone.r][stone.c][i];
+    tryPlacement(piece, placement);
+  }
+}
+
+void MoveGenerator::tryPlacement(u8 piece, int varId) {
+  PieceVariant& var = board.pieceSet->variants[varId];
+  if (board.accommodates(var, player)) {
+    moves[numMoves++] = { varId, piece };
   }
 }

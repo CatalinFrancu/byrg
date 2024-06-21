@@ -1,45 +1,47 @@
 #pragma once
 
+#include "Cell.h"
 #include "globals.h"
-#include "Bitset.h"
 #include "Move.h"
 #include "PieceSet.h"
 
 class Board {
 public:
-  static constexpr int STARTING_POSITIONS[2] = { 130, 65 };
-  static const int COEF_POP = 4;
-  static const int COEF_STONES = 1;
+  static const u8 EMPTY = 2;
+  static constexpr Cell STARTING_POSITIONS[2] = { { 10, 5 }, { 5, 10 } };
 
   static constexpr char ANSI_COLORS[2][7] = {
     "\e[105m", "\e[43m",
   };
   static constexpr char DEFAULT_COLOR[7] = "\e[49m";
 
-  // border masks to be used during the move generation
-  static Bitset firstRank, lastRank, firstFile, lastFile;
-  PieceSet* pieceSet;
+  static const int SCORE_SELF = 1;
+  static const int SCORE_OPP = 1;
+  static const int SCORE_LARGE_PIECES = 2;
 
-  // occupancy per player
-  Bitset occ[2];
+  // 0-1 = used by player 0-1; EMPTY = empty
+  u8 a[PADDED_BOARD_SIZE][PADDED_BOARD_SIZE];
+
+  PieceSet* pieceSet;
 
   // bit masks of pieces still in hand
   int inHand[2];
 
   void init();
 
-  void makeLandscape(int player, Bitset& unavailable, Bitset& stones);
-  Bitset getStartingPos(int player);
   int eval(int player);
   int sideEval(int player);
 
+  void setArea(int val, Move& move);
   void makeMove(int player, Move& move);
   void undoMove(int player, Move& move);
-  int getPieceFromMask(Bitset mask);
+  int collectStones(int player, Cell* dest);
+  bool accommodates(PieceVariant var, int player);
+  bool isAvailable(int player, int rank, int file);
   void print();
-  void printBit(int bit);
+  void printCell(int rank, int file);
 
 private:
-  void initBorderMasks();
+  void initMatrix();
   void initPlayerMasks();
 };

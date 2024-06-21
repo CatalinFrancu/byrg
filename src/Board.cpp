@@ -5,134 +5,137 @@
 #include "PieceSet.h"
 #include <stdio.h>
 
-Bitset Board::firstRank;
-Bitset Board::lastRank;
-Bitset Board::firstFile;
-Bitset Board::lastFile;
-
 void Board::init() {
-  initBorderMasks();
+  initMatrix();
   initPlayerMasks();
 }
 
-void Board::initBorderMasks() {
-  int size = BOARD_SIZE;
-  for (int i = 0; i < size; i++) {
-    firstRank.set(i);
-    lastRank.set(size * (size - 1) + i);
-    firstFile.set(size * i);
-    lastFile.set(size * i + size - 1);
+void Board::initMatrix() {
+  for (int i = 0; i < PADDED_BOARD_SIZE; i++) {
+    for (int j = 0; j < PADDED_BOARD_SIZE; j++) {
+      a[i][j] = EMPTY;
+    }
   }
 }
 
 void Board::initPlayerMasks() {
-  occ[0].clear();
-  occ[1].clear();
   inHand[0] = inHand[1] = (1 << NUM_PIECES) - 1;
 }
 
 int Board::eval(int player) {
-  return sideEval(player) - sideEval(1 - player);
+  return SCORE_SELF * sideEval(player)
+    - SCORE_OPP * sideEval(1 - player);
 }
 
 int Board::sideEval(int player) {
-  Bitset unavailable;
-  Bitset stones;
-  makeLandscape(player, unavailable, stones);
-  return occ[player].count() * COEF_POP
-      + stones.count() * COEF_STONES;
+  // count stones and cells
+  int numStones = 0;
+  int numCells = 0;
+  for (u8 r = 1; r <= BOARD_SIZE; r++) {
+    for (u8 c = 1; c <= BOARD_SIZE; c++) {
+      if (isAvailable(player, r, c) &&
+          ((a[r - 1][c - 1] == player) ||
+           (a[r - 1][c + 1] == player) ||
+           (a[r + 1][c - 1] == player) ||
+           (a[r + 1][c + 1] == player))) {
+        numStones++;
+      }
+      if (a[r][c] == player) {
+        numCells++;
+      }
+    }
+  }
+
+  if (!numStones) {
+    numStones = 1;
+  }
+
+  int score = numStones + numCells * SCORE_LARGE_PIECES;
+  return score;
 }
 
-void Board::makeLandscape(int player, Bitset& unavailable, Bitset& stones) {
-  Bitset& me = occ[player];
-  int size = BOARD_SIZE;
-
-  // Squares occupied by any player are unavailable.
-  unavailable = occ[0] | occ[1];
-
-  // Squares adjacent to my pieces are unavailable.
-  unavailable |= (me & ~firstRank) >> size;
-  unavailable |= (me & ~lastRank) << size;
-  unavailable |= (me & ~firstFile) >> 1;
-  unavailable |= (me & ~lastFile) << 1;
-
-  // The piece must touch a stepping stone.
-  if (me.any()) {
-    stones =
-      ((me & ~firstRank & ~firstFile) >> (size + 1)) |
-      ((me & ~firstRank & ~lastFile) >> (size - 1)) |
-      ((me & ~lastRank & ~firstFile) << (size - 1)) |
-      ((me & ~lastRank & ~lastFile) << (size + 1));
-  } else {
-    stones = getStartingPos(player);
+void Board::setArea(int val, Move& move) {
+  PieceVariant var = pieceSet->variants[move.variant];
+  for (int i = 0; i < var.size; i++) {
+    int row = var.cells[i] / PADDED_BOARD_SIZE;
+    int col = var.cells[i] % PADDED_BOARD_SIZE;
+    a[row][col] = val;
   }
 }
 
-Bitset Board::getStartingPos(int player) {
-  Bitset result;
-  result.clear();
-  int pos = STARTING_POSITIONS[player];
-  result.set(pos);
-  return result;
-}
-
 void Board::makeMove(int player, Move& move) {
-  occ[player] ^= move.mask;
+  setArea(player, move);
   inHand[player] ^= (1 << move.piece);
 }
 
 void Board::undoMove(int player, Move& move) {
-  // Identical, under the current board representation.
-  makeMove(player, move);
+  setArea(EMPTY, move);
+  inHand[player] ^= (1 << move.piece);
 }
 
-int Board::getPieceFromMask(Bitset mask) {
-  // Shift the mask towards the LSB
-  while ((mask & firstRank).none()) {
-    mask >>= BOARD_SIZE;
-  }
-  while ((mask & firstFile).none()) {
-    mask >>= 1;
-  }
-
-  for (int p = 0; p < NUM_PIECES; p++) {
-    Piece& piece = pieceSet->pieces[p];
-    for (int rot = 0; rot < piece.numVariants; rot++) {
-      if (piece.variants[rot].mask == mask) {
-        return p;
+int Board::collectStones(int player, Cell* dest) {
+  int n = 0;
+  for (u8 r = 1; r <= BOARD_SIZE; r++) {
+    for (u8 c = 1; c <= BOARD_SIZE; c++) {
+      if (isAvailable(player, r, c) &&
+          ((a[r - 1][c - 1] == player) ||
+           (a[r - 1][c + 1] == player) ||
+           (a[r + 1][c - 1] == player) ||
+           (a[r + 1][c + 1] == player))) {
+        dest[n++] = { r, c };
       }
     }
   }
-  assert(false);
+
+  if (!n) {
+    dest[n++] = STARTING_POSITIONS[player];
+  }
+  return n;
+}
+
+bool Board::accommodates(PieceVariant var, int player) {
+  for (int i = 0; i < var.size; i++) {
+    int rank = var.cells[i] / PADDED_BOARD_SIZE;
+    int file = var.cells[i] % PADDED_BOARD_SIZE;
+    if (!isAvailable(player, rank, file)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool Board::isAvailable(int player, int rank, int file) {
+  return
+    (rank >= 0) && (rank < PADDED_BOARD_SIZE) &&
+    (file >= 0) && (file < PADDED_BOARD_SIZE) &&
+    (a[rank][file] == EMPTY) &&
+    (a[rank][file - 1] != player) &&
+    (a[rank - 1][file] != player) &&
+    (a[rank][file + 1] != player) &&
+    (a[rank + 1][file] != player);
 }
 
 void Board::print() {
-  int size = BOARD_SIZE;
-  for (int rank = size - 1; rank >= 0; rank--) {
-    fprintf(stderr, "%2d ", rank + 1);
-    for (int file = 0; file < size; file++) {
-      int bit = rank * size + file;
-      printBit(bit);
+  for (int rank = BOARD_SIZE; rank >= 1; rank--) {
+    fprintf(stderr, "%2d ", rank);
+    for (int file = 1; file <= BOARD_SIZE; file++) {
+      printCell(rank, file);
     }
     fprintf(stderr, "\n");
   }
 
   fprintf(stderr, "   ");
-  for (int file = 0; file < size; file++) {
+  for (int file = 0; file < BOARD_SIZE; file++) {
     fprintf(stderr, " %c", file + 'a');
   }
   fprintf(stderr, "\n");
 }
 
-void Board::printBit(int bit) {
-  int p = 0;
-  while ((p < 2) && !occ[p].get(bit)) {
-    p++;
-  }
-
-  if (p == 2) {
+void Board::printCell(int rank, int file) {
+  if (a[rank][file] == EMPTY) {
     fprintf(stderr, "  ");
   } else {
+    int p = a[rank][file];
     fprintf(stderr, "%s  %s", ANSI_COLORS[p], DEFAULT_COLOR);
   }
 }

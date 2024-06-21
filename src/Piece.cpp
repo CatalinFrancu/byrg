@@ -1,15 +1,17 @@
 #include "Piece.h"
 
-void Piece::considerBitmap(Bitmap bitmap) {
-  size = bitmap.getSize();
-  variants[numVariants].fromBitmap(bitmap);
+bool Piece::addIfDistinct(PieceVariant var) {
+  variants[numVariants] = var;
 
-  // Check if the new bitset is distinct from all the others
+  // Check if the new variant is distinct from all the others.
   int i = 0;
-  while (variants[i].mask != variants[numVariants].mask) {
+  while (variants[i] != variants[numVariants]) {
     i++;
   }
   if (i == numVariants) {
     numVariants++;
+    return true;
+  } else {
+    return false;
   }
 }
