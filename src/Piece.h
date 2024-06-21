@@ -8,5 +8,5 @@ public:
   PieceVariant variants[MAX_VARIANTS];
   int size, numVariants;
 
-  void considerBitmap(Bitmap bitmap, int boardSize);
+  void considerBitmap(Bitmap bitmap);
 };

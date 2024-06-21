@@ -26,8 +26,6 @@ public:
 private:
   void runForPlayer();
   void runForPlayerStone(int stone);
-  void runForPlayerStoneVariant(int stone, int piece, int var);
-  void runForPlayerStoneVariantShift(int piece, int var, int shift);
-  void add(Bitset& mask, int piece);
+  void runForPlayerStoneShift(int piece, int stone, int shift);
 
 };

@@ -30,47 +30,18 @@ void MoveGenerator::runForPlayerStone(int stone) {
   int hand = board.inHand[player];
   while (hand) {
     int piece = __builtin_ctz(hand);
-    for (int var = 0; var < board.pieceSet->pieces[piece].numVariants; var++) {
-      runForPlayerStoneVariant(stone, piece, var);
+    int numShifts = board.pieceSet->numShifts[piece][stone];
+    for (int i = 0; i < numShifts; i++) {
+      runForPlayerStoneShift(piece, stone, i);
     }
     hand &= hand - 1;
   }
 }
 
-void MoveGenerator::runForPlayerStoneVariant(int stone, int piece, int var) {
-  Piece& p = board.pieceSet->pieces[piece];
-  PieceVariant& v = p.variants[var];
-  int srow = stone / BOARD_SIZE;
-  int scol = stone % BOARD_SIZE;
-
-  for (int i = 0; i < p.size; i++) {
-    int cell = v.bits[i];
-    // Check whether we can translate @var to overlap @cell and @stone.
-    int crow = cell / BOARD_SIZE;
-    int ccol = cell % BOARD_SIZE;
-
-    if ((srow >= crow) &&
-        (srow <= BOARD_SIZE - v.height + crow) &&
-        (scol >= ccol) &&
-        (scol <= BOARD_SIZE - v.width + ccol)) {
-      runForPlayerStoneVariantShift(piece, var, stone - cell);
-    }
-  }
-}
-
-void MoveGenerator::runForPlayerStoneVariantShift(int piece, int var, int shift) {
-  Piece& p = board.pieceSet->pieces[piece];
-  PieceVariant& v = p.variants[var];
-
-  Bitset b = v.mask << shift;
+void MoveGenerator::runForPlayerStoneShift(int piece, int stone, int shift) {
+  Bitset& b = board.pieceSet->shiftedMasks[piece][stone][shift];
 
   if ((b & unavailable).none()) {
-    add(b, piece);
+    moves[numMoves++] = { b, (u8)piece };
   }
-}
-
-void MoveGenerator::add(Bitset& mask, int piece) {
-  moves[numMoves].mask = mask;
-  moves[numMoves].piece = piece;
-  numMoves++;
 }

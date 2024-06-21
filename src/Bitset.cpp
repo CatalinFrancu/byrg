@@ -159,10 +159,10 @@ void Bitset::copyFrom(const Bitset* src) {
 }
 
 void Bitset::print(int width) {
-  int rows = (SIZE - 1) / width + 1;
+  int rows = (NUM_BITS - 1) / width + 1;
   for (int r = rows - 1; r >= 0; r--) {
     for (int b = r * width;
-         (b < (r + 1) * width) && (b < SIZE);
+         (b < (r + 1) * width) && (b < NUM_BITS);
          b++) {
       putchar(get(b) ? '*' : '.');
     }

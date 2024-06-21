@@ -5,9 +5,8 @@
 class Bitset {
 public:
   // All Bitsets have the same size.
-  static const int SIZE = BOARD_SIZE * BOARD_SIZE;
-  static const int WHOLE = SIZE / 64;
-  static const int PART = SIZE % 64;
+  static const int WHOLE = NUM_BITS / 64;
+  static const int PART = NUM_BITS % 64;
   static const int NONE = -1;
 
   void set(int pos);
