@@ -9,18 +9,35 @@ void PieceSet::precompute() {
   Bitmap bitmap;
 
   for (int i = 0; i < NUM_PIECES; i++) {
+    numDistinct = 0;
     bitmap.copyFrom(BITMAPS[i]);
     for (int mir = 0; mir < 2; mir++) {
       for (int rot = 0; rot < 4; rot++) {
         PieceVariant var;
         var.fromBitmap(bitmap);
-        if (pieces[i].addIfDistinct(var)) {
+        if (isDistinct(var)) {
           tryAllShifts(i, var);
         }
         bitmap.rotate();
       }
       bitmap.mirror();
     }
+  }
+}
+
+bool PieceSet::isDistinct(PieceVariant var) {
+  distinct[numDistinct] = var;
+
+  // Check if the new variant is distinct from all the others.
+  int i = 0;
+  while (distinct[i] != var) {
+    i++;
+  }
+  if (i == numDistinct) {
+    numDistinct++;
+    return true;
+  } else {
+    return false;
   }
 }
 

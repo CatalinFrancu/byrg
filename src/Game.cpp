@@ -1,7 +1,6 @@
 #include <assert.h>
 #include "Game.h"
 #include "MoveGenerator.h"
-#include "Piece.h"
 #include "SearchResult.h"
 #include <string>
 #include "StrUtil.h"
