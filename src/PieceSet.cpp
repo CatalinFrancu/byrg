@@ -13,10 +13,10 @@ void PieceSet::precompute() {
     bitmap.copyFrom(BITMAPS[i]);
     for (int mir = 0; mir < 2; mir++) {
       for (int rot = 0; rot < 4; rot++) {
-        PieceVariant var;
-        var.fromBitmap(bitmap);
-        if (isDistinct(var)) {
-          tryAllShifts(i, var);
+        Piece p;
+        p.fromBitmap(bitmap);
+        if (isDistinct(p)) {
+          tryAllShifts(i, p);
         }
         bitmap.rotate();
       }
@@ -25,12 +25,12 @@ void PieceSet::precompute() {
   }
 }
 
-bool PieceSet::isDistinct(PieceVariant var) {
-  distinct[numDistinct] = var;
+bool PieceSet::isDistinct(Piece p) {
+  distinct[numDistinct] = p;
 
   // Check if the new variant is distinct from all the others.
   int i = 0;
-  while (distinct[i] != var) {
+  while (distinct[i] != p) {
     i++;
   }
   if (i == numDistinct) {
@@ -41,20 +41,20 @@ bool PieceSet::isDistinct(PieceVariant var) {
   }
 }
 
-void PieceSet::tryAllShifts(int piece, PieceVariant var) {
+void PieceSet::tryAllShifts(int piece, Piece var) {
   int width = var.getWidth();
   int height = var.getHeight();
 
   for (int dr = 0; dr <= BOARD_SIZE - height; dr++) {
     for (int dc = 0; dc <= BOARD_SIZE - width; dc++) {
-      PieceVariant v = var;
+      Piece v = var;
       v.translate(dr, dc);
       addPlacements(piece, v);
     }
   }
 }
 
-void PieceSet::addPlacements(int piece, PieceVariant var) {
+void PieceSet::addPlacements(int piece, Piece var) {
   for (int i = 0; i < var.size; i++) {
     int rank = var.cells[i] / PADDED_BOARD_SIZE;
     int file = var.cells[i] % PADDED_BOARD_SIZE;
@@ -64,7 +64,7 @@ void PieceSet::addPlacements(int piece, PieceVariant var) {
   variants[numVariants++] = var;
 }
 
-Move PieceSet::find(PieceVariant var) {
+Move PieceSet::find(Piece var) {
   Move m;
   int rank = var.cells[0] / PADDED_BOARD_SIZE;
   int file = var.cells[0] % PADDED_BOARD_SIZE;
@@ -72,7 +72,7 @@ Move PieceSet::find(PieceVariant var) {
   for (u8 piece = 0; piece < NUM_PIECES; piece++) {
     for (int i = 0; i < numPlacements[piece][rank][file]; i++) {
       int varId = placements[piece][rank][file][i];
-      PieceVariant& cand = variants[varId];
+      Piece& cand = variants[varId];
       if (cand == var) {
         return { varId, piece };
       }

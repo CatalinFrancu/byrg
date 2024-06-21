@@ -55,22 +55,22 @@ int Board::sideEval(int player) {
 }
 
 void Board::setArea(int val, Move& move) {
-  PieceVariant var = pieceSet->variants[move.variant];
-  for (int i = 0; i < var.size; i++) {
-    int row = var.cells[i] / PADDED_BOARD_SIZE;
-    int col = var.cells[i] % PADDED_BOARD_SIZE;
+  Piece p = pieceSet->variants[move.varId];
+  for (int i = 0; i < p.size; i++) {
+    int row = p.cells[i] / PADDED_BOARD_SIZE;
+    int col = p.cells[i] % PADDED_BOARD_SIZE;
     a[row][col] = val;
   }
 }
 
 void Board::makeMove(int player, Move& move) {
   setArea(player, move);
-  inHand[player] ^= (1 << move.piece);
+  inHand[player] ^= (1 << move.pieceId);
 }
 
 void Board::undoMove(int player, Move& move) {
   setArea(EMPTY, move);
-  inHand[player] ^= (1 << move.piece);
+  inHand[player] ^= (1 << move.pieceId);
 }
 
 int Board::collectStones(int player, Cell* dest) {
@@ -93,10 +93,10 @@ int Board::collectStones(int player, Cell* dest) {
   return n;
 }
 
-bool Board::accommodates(PieceVariant var, int player) {
-  for (int i = 0; i < var.size; i++) {
-    int rank = var.cells[i] / PADDED_BOARD_SIZE;
-    int file = var.cells[i] % PADDED_BOARD_SIZE;
+bool Board::accommodates(Piece p, int player) {
+  for (int i = 0; i < p.size; i++) {
+    int rank = p.cells[i] / PADDED_BOARD_SIZE;
+    int file = p.cells[i] % PADDED_BOARD_SIZE;
     if (!isAvailable(player, rank, file)) {
       return false;
     }

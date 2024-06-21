@@ -25,8 +25,8 @@ std::string Game::findMove(int player) {
   fprintf(stderr, "SCORE: %d\n", sr.score);
 
   board.makeMove(player, sr.move);
-  PieceVariant pv = pieceSet.variants[sr.move.variant];
-  std::string str = pv.toString();
+  Piece p = pieceSet.variants[sr.move.varId];
+  std::string str = p.toString();
   clock.stop();
 
   return str;
@@ -64,9 +64,9 @@ SearchResult Game::minimax(int player, int depth) {
 }
 
 void Game::makeMove(int player, std::string move) {
-  PieceVariant pv;
-  pv.fromString(move);
+  Piece p;
+  p.fromString(move);
 
-  Move m = pieceSet.find(pv);
+  Move m = pieceSet.find(p);
   board.makeMove(player, m);
 }

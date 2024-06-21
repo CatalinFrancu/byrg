@@ -36,7 +36,7 @@ public:
   void makeMove(int player, Move& move);
   void undoMove(int player, Move& move);
   int collectStones(int player, Cell* dest);
-  bool accommodates(PieceVariant var, int player);
+  bool accommodates(Piece var, int player);
   bool isAvailable(int player, int rank, int file);
   void print();
   void printCell(int rank, int file);

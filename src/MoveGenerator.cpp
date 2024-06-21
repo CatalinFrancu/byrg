@@ -43,7 +43,7 @@ void MoveGenerator::runForPlayerPieceStone(int piece, Cell stone) {
 }
 
 void MoveGenerator::tryPlacement(u8 piece, int varId) {
-  PieceVariant& var = board.pieceSet->variants[varId];
+  Piece& var = board.pieceSet->variants[varId];
   if (board.accommodates(var, player)) {
     moves[numMoves++] = { varId, piece };
   }

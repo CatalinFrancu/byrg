@@ -1,7 +1,7 @@
-#include "PieceVariant.h"
+#include "Piece.h"
 #include <string>
 
-bool PieceVariant::operator==(PieceVariant other) {
+bool Piece::operator==(Piece other) {
   if (size != other.size) {
     return false;
   }
@@ -13,7 +13,7 @@ bool PieceVariant::operator==(PieceVariant other) {
   return true;
 }
 
-int PieceVariant::getWidth() {
+int Piece::getWidth() {
   int result = 0;
   for (int i = 0; i < size; i++) {
     int file = cells[i] % PADDED_BOARD_SIZE;
@@ -22,7 +22,7 @@ int PieceVariant::getWidth() {
   return result;
 }
 
-int PieceVariant::getHeight() {
+int Piece::getHeight() {
   int result = 0;
   for (int i = 0; i < size; i++) {
     int rank = cells[i] / PADDED_BOARD_SIZE;
@@ -31,7 +31,7 @@ int PieceVariant::getHeight() {
   return result;
 }
 
-void PieceVariant::translate(int dr, int dc) {
+void Piece::translate(int dr, int dc) {
   for (int i = 0; i < size; i++) {
     int rank = cells[i] / PADDED_BOARD_SIZE;
     int file = cells[i] % PADDED_BOARD_SIZE;
@@ -39,7 +39,7 @@ void PieceVariant::translate(int dr, int dc) {
   }
 }
 
-void PieceVariant::fromBitmap(Bitmap b) {
+void Piece::fromBitmap(Bitmap b) {
   size = 0;
   for (int r = 0; b.pixels[r][0]; r++) {
     for (int c = 0; b.pixels[r][c]; c++) {
@@ -50,7 +50,7 @@ void PieceVariant::fromBitmap(Bitmap b) {
   }
 }
 
-void PieceVariant::fromString(std::string s) {
+void Piece::fromString(std::string s) {
   size = 0;
 
   int p = 0, len = s.length();
@@ -65,7 +65,7 @@ void PieceVariant::fromString(std::string s) {
   }
 }
 
-std::string PieceVariant::toString() {
+std::string Piece::toString() {
   std::string result = "";
   for (int i = 0; i < size; i++) {
     if (result > "") {

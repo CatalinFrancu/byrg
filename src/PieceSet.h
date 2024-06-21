@@ -1,15 +1,15 @@
 #pragma once
 
-#include "PieceVariant.h"
+#include "Piece.h"
 
 class PieceSet {
 public:
   // Temporary array of distinct variants (up to 8).
   // Used during precompute().
-  PieceVariant distinct[MAX_PIECE_VARIANTS];
+  Piece distinct[MAX_PIECE_VARIANTS];
   int numDistinct;
 
-  PieceVariant variants[MAX_VARIANTS];
+  Piece variants[MAX_VARIANTS];
   int numVariants;
 
   // For every piece and every cell on the board, store the indices of the
@@ -20,9 +20,9 @@ public:
   int numPlacements[NUM_PIECES][PADDED_BOARD_SIZE][PADDED_BOARD_SIZE];
 
   void precompute();
-  bool isDistinct(PieceVariant var);
-  void tryAllShifts(int piece, PieceVariant var);
-  void addPlacements(int piece, PieceVariant var);
+  bool isDistinct(Piece p);
+  void tryAllShifts(int piece, Piece var);
+  void addPlacements(int piece, Piece var);
 
-  Move find(PieceVariant var);
+  Move find(Piece var);
 };

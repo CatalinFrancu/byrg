@@ -3,12 +3,12 @@
 #include "Bitmap.h"
 #include <string>
 
-class PieceVariant {
+class Piece {
 public:
   u8 cells[MAX_PIECE_SIZE];
   u8 size;
 
-  bool operator==(PieceVariant other);
+  bool operator==(Piece other);
 
   int getWidth();
   int getHeight();
