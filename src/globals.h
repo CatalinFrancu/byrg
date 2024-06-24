@@ -8,6 +8,7 @@ const int BOARD_SIZE = 14;
 const int PADDED_BOARD_SIZE = 16;
 const int NUM_PIECES = 21;
 const int MAX_PIECE_SIZE = 5;
+const int MAX_CORNERS = 20;
 
 const int MAX_STONES = 50; // TBD what is realistic
 

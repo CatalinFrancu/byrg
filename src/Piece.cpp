@@ -16,7 +16,7 @@ bool Piece::operator==(Piece other) {
 int Piece::getWidth() {
   int result = 0;
   for (int i = 0; i < size; i++) {
-    int file = cells[i].getFile();
+    int file = cells[i].file;
     result = std::max(result, file);
   }
   return result;
@@ -25,7 +25,7 @@ int Piece::getWidth() {
 int Piece::getHeight() {
   int result = 0;
   for (int i = 0; i < size; i++) {
-    int rank = cells[i].getRank();
+    int rank = cells[i].rank;
     result = std::max(result, rank);
   }
   return result;
@@ -33,9 +33,7 @@ int Piece::getHeight() {
 
 void Piece::translate(int dr, int dc) {
   for (int i = 0; i < size; i++) {
-    int rank = cells[i].getRank();
-    int file = cells[i].getFile();
-    cells[i].set(rank + dr, file + dc);
+    cells[i].translate(dr, dc);
   }
 }
 

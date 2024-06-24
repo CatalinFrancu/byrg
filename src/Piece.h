@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Bitmap.h"
-#include "PackedCell.h"
+#include "Cell.h"
 #include <string>
 
 class Piece {
 public:
-  PackedCell cells[MAX_PIECE_SIZE];
+  Cell cells[MAX_PIECE_SIZE];
   u8 size;
 
   bool operator==(Piece other);
@@ -16,6 +16,8 @@ public:
   void translate(int dr, int dc);
 
   void fromBitmap(Bitmap b);
+
+  // Parses a Pentobi GTP move string. Populates cells[], but not corners[].
   void fromString(std::string s);
   std::string toString();
 };

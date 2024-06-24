@@ -35,9 +35,9 @@ void MoveGenerator::runForPlayerPiece(int piece) {
 
 void MoveGenerator::runForPlayerPieceStone(int piece, Cell stone) {
   PieceSet* ps = board.pieceSet;
-  int n = ps->numPlacements[piece][stone.r][stone.c];
+  int n = ps->numPlacements[piece][stone.rank][stone.file];
   for (int i = 0; i < n; i++) {
-    int placement = ps->placements[piece][stone.r][stone.c][i];
+    int placement = ps->placements[piece][stone.rank][stone.file][i];
     tryPlacement(piece, placement);
   }
 }
