@@ -16,7 +16,7 @@ bool Piece::operator==(Piece other) {
 int Piece::getWidth() {
   int result = 0;
   for (int i = 0; i < size; i++) {
-    int file = cells[i] % PADDED_BOARD_SIZE;
+    int file = cells[i].getFile();
     result = std::max(result, file);
   }
   return result;
@@ -25,7 +25,7 @@ int Piece::getWidth() {
 int Piece::getHeight() {
   int result = 0;
   for (int i = 0; i < size; i++) {
-    int rank = cells[i] / PADDED_BOARD_SIZE;
+    int rank = cells[i].getRank();
     result = std::max(result, rank);
   }
   return result;
@@ -33,9 +33,9 @@ int Piece::getHeight() {
 
 void Piece::translate(int dr, int dc) {
   for (int i = 0; i < size; i++) {
-    int rank = cells[i] / PADDED_BOARD_SIZE;
-    int file = cells[i] % PADDED_BOARD_SIZE;
-    cells[i] = (rank + dr) * PADDED_BOARD_SIZE + (file + dc);
+    int rank = cells[i].getRank();
+    int file = cells[i].getFile();
+    cells[i].set(rank + dr, file + dc);
   }
 }
 
@@ -44,7 +44,7 @@ void Piece::fromBitmap(Bitmap b) {
   for (int r = 0; b.pixels[r][0]; r++) {
     for (int c = 0; b.pixels[r][c]; c++) {
       if (b.pixels[r][c] == '*') {
-        cells[size++] = (r + 1) * PADDED_BOARD_SIZE + (c + 1);
+        cells[size++].set(r + 1, c + 1);
       }
     }
   }
@@ -60,7 +60,7 @@ void Piece::fromString(std::string s) {
     while (std::isdigit(s[p])) {
       rank = rank * 10 + (s[p++] - '0');
     }
-    cells[size++] = rank * PADDED_BOARD_SIZE + file;
+    cells[size++].set(rank, file);
     p++; // skip the comma
   }
 }
@@ -71,10 +71,7 @@ std::string Piece::toString() {
     if (result > "") {
       result += ',';
     }
-    int rank = cells[i] / PADDED_BOARD_SIZE;
-    int file = cells[i] % PADDED_BOARD_SIZE;
-    result += (file - 1 + 'a');
-    result += std::to_string(rank);
+    result += cells[i].toString();
   }
   return result;
 }

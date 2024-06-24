@@ -56,8 +56,8 @@ void PieceSet::tryAllShifts(int piece, Piece var) {
 
 void PieceSet::addPlacements(int piece, Piece var) {
   for (int i = 0; i < var.size; i++) {
-    int rank = var.cells[i] / PADDED_BOARD_SIZE;
-    int file = var.cells[i] % PADDED_BOARD_SIZE;
+    int rank = var.cells[i].getRank();
+    int file = var.cells[i].getFile();
     int &n = numPlacements[piece][rank][file];
     placements[piece][rank][file][n++] = numVariants;
   }
@@ -66,8 +66,8 @@ void PieceSet::addPlacements(int piece, Piece var) {
 
 Move PieceSet::find(Piece var) {
   Move m;
-  int rank = var.cells[0] / PADDED_BOARD_SIZE;
-  int file = var.cells[0] % PADDED_BOARD_SIZE;
+  int rank = var.cells[0].getRank();
+  int file = var.cells[0].getFile();
 
   for (u8 piece = 0; piece < NUM_PIECES; piece++) {
     for (int i = 0; i < numPlacements[piece][rank][file]; i++) {

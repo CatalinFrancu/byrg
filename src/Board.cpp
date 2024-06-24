@@ -57,9 +57,9 @@ int Board::sideEval(int player) {
 void Board::setArea(int val, Move& move) {
   Piece p = pieceSet->variants[move.varId];
   for (int i = 0; i < p.size; i++) {
-    int row = p.cells[i] / PADDED_BOARD_SIZE;
-    int col = p.cells[i] % PADDED_BOARD_SIZE;
-    a[row][col] = val;
+    int rank = p.cells[i].getRank();
+    int file = p.cells[i].getFile();
+    a[rank][file] = val;
   }
 }
 
@@ -95,8 +95,8 @@ int Board::collectStones(int player, Cell* dest) {
 
 bool Board::accommodates(Piece p, int player) {
   for (int i = 0; i < p.size; i++) {
-    int rank = p.cells[i] / PADDED_BOARD_SIZE;
-    int file = p.cells[i] % PADDED_BOARD_SIZE;
+    int rank = p.cells[i].getRank();
+    int file = p.cells[i].getFile();
     if (!isAvailable(player, rank, file)) {
       return false;
     }

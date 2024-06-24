@@ -24,6 +24,8 @@ set(SOURCES
     src/Move.h
     src/MoveGenerator.cpp
     src/MoveGenerator.h
+    src/PackedCell.cpp
+    src/PackedCell.h
     src/PieceSet.cpp
     src/PieceSet.h
     src/Piece.cpp

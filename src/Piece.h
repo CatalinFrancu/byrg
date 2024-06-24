@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Bitmap.h"
+#include "PackedCell.h"
 #include <string>
 
 class Piece {
 public:
-  u8 cells[MAX_PIECE_SIZE];
+  PackedCell cells[MAX_PIECE_SIZE];
   u8 size;
 
   bool operator==(Piece other);
