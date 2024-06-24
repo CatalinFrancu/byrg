@@ -35,6 +35,20 @@ void Piece::translate(int dr, int dc) {
   for (int i = 0; i < size; i++) {
     cells[i].translate(dr, dc);
   }
+  for (int i = 0; i < numCorners; i++) {
+    corners[i].translate(dr, dc);
+  }
+  filterOnBoardCorners();
+}
+
+void Piece::filterOnBoardCorners() {
+  int i = 0;
+  for (int j = 0; j < numCorners; j++) {
+    if (corners[j].onBoard()) {
+      corners[i++] = corners[j];
+    }
+  }
+  numCorners = i;
 }
 
 void Piece::fromBitmap(Bitmap b) {
@@ -46,6 +60,8 @@ void Piece::fromBitmap(Bitmap b) {
       }
     }
   }
+
+  numCorners = b.getCorners(corners);
 }
 
 void Piece::fromString(std::string s) {

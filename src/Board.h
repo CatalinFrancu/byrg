@@ -22,10 +22,10 @@ public:
   // 0-1 = used by player 0-1; EMPTY = empty
   u8 a[PADDED_BOARD_SIZE][PADDED_BOARD_SIZE];
 
-  PieceSet* pieceSet;
-
   // bit masks of pieces still in hand
   int inHand[2];
+
+  PieceSet* pieceSet;
 
   void init();
 

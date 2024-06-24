@@ -5,6 +5,11 @@ bool Cell::operator==(Cell other) {
   return (rank == other.rank) && (file == other.file);
 }
 
+bool Cell::onBoard() {
+  return (rank > 0) && (rank <= BOARD_SIZE) &&
+    (file > 0) && (file <= BOARD_SIZE);
+}
+
 void Cell::set(int rank, int file) {
   this->rank = rank;
   this->file = file;

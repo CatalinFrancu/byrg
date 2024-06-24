@@ -1,21 +1,19 @@
 #include "Bitmap.h"
+#include "Cell.h"
 #include <string.h>
 #include "StrUtil.h"
 
 void Bitmap::copyFrom(Bitmap src) {
-  int r = 0;
-  while (src.pixels[r][0]) {
+  int rows = src.getNumRows();
+
+  for (int r = 0; r < rows; r++) {
     strcpy(pixels[r], src.pixels[r]);
-    r++;
   }
-  pixels[r][0] = '\0';
+  pixels[rows][0] = '\0';
 }
 
 void Bitmap::rotate() {
-  int rows = 0, cols = strlen(pixels[0]);
-  while (pixels[rows][0]) {
-    rows++;
-  }
+  int rows = getNumRows(), cols = getNumCols();
 
   Bitmap tmp;
   for (int r = 0; r < rows; r++) {
@@ -32,17 +30,53 @@ void Bitmap::rotate() {
 }
 
 void Bitmap::mirror() {
-  for (int r = 0; pixels[r][0]; r++) {
+  int rows = getNumRows();
+  for (int r = 0; r < rows; r++) {
     StrUtil::reverse(pixels[r]);
   }
 }
 
-int Bitmap::getSize() {
-  int result = 0;
-  for (int r = 0; pixels[r][0]; r++) {
-    for (int c = 0; pixels[r][c]; c++) {
-      result += (pixels[r][c] == '*');
+int Bitmap::getNumRows() {
+  int rows = 0;
+  while (pixels[rows][0]) {
+    rows++;
+  }
+
+  return rows;
+}
+
+int Bitmap::getNumCols() {
+  return strlen(pixels[0]);
+}
+
+bool Bitmap::occupied(int row, int col) {
+  return (row >= 0) &&
+    (row < getNumRows()) &&
+    (col >= 0) &&
+    (col <= getNumCols()) &&
+    (pixels[row][col] == '*');
+}
+
+int Bitmap::getCorners(Cell* dest) {
+  int rows = getNumRows();
+  int cols = getNumCols();
+  int numCorners = 0;
+
+  for (int r = -1; r <= rows; r++) {
+    for (int c = -1; c <= cols; c++) {
+      if (!occupied(r, c) &&
+          !occupied(r - 1, c) &&
+          !occupied(r, c - 1) &&
+          !occupied(r + 1, c) &&
+          !occupied(r, c + 1) &&
+          (occupied(r - 1, c - 1) ||
+           occupied(r - 1, c + 1) ||
+           occupied(r + 1, c - 1) ||
+           occupied(r + 1, c + 1))) {
+        dest[numCorners++] = { (char)(r + 1), (char)(c + 1) };
+      }
     }
   }
-  return result;
+
+  return numCorners;
 }

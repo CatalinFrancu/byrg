@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Cell.h"
 #include "globals.h"
 
 class Bitmap {
@@ -9,7 +10,11 @@ public:
   void copyFrom(Bitmap src);
   void rotate();
   void mirror();
-  int getSize();
+
+  int getNumRows();
+  int getNumCols();
+  bool occupied(int row, int col);
+  int getCorners(Cell* dest);
 };
 
 const Bitmap BITMAPS[NUM_PIECES] = {
