@@ -22,10 +22,9 @@ void Game::restart() {
 std::string Game::findMove(int player) {
   clock.start();
   SearchResult sr = minimax(player, 2);
+  board.makeMove(player, sr.move);
   board.print();
   fprintf(stderr, "SCORE: %d\n", sr.score);
-
-  board.makeMove(player, sr.move);
   Piece p = pieceSet.variants[sr.move.varId];
   std::string str = p.toString();
   clock.stop();

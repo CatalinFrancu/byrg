@@ -23,7 +23,7 @@ public:
 
   // 0-1 = used by player 0-1; EMPTY = empty
   u8 a[PADDED_BOARD_SIZE][PADDED_BOARD_SIZE];
-
+  int count[3]; // include count for EMPTY
   CornerList corners[2];
 
   // bit masks of pieces still in hand

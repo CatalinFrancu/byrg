@@ -18,6 +18,8 @@ void Board::initMatrix() {
       a[i][j] = EMPTY;
     }
   }
+  count[0] = count[1] = 0;
+  count[EMPTY] = PADDED_BOARD_SIZE * PADDED_BOARD_SIZE;
 }
 
 void Board::initPlayerMasks() {
@@ -36,26 +38,8 @@ int Board::eval(int player) {
 
 int Board::sideEval(int player) {
   // count stones and cells
-  int numStones = 0;
-  int numCells = 0;
-  for (u8 r = 1; r <= BOARD_SIZE; r++) {
-    for (u8 c = 1; c <= BOARD_SIZE; c++) {
-      if (isAvailable(player, r, c) &&
-          ((a[r - 1][c - 1] == player) ||
-           (a[r - 1][c + 1] == player) ||
-           (a[r + 1][c - 1] == player) ||
-           (a[r + 1][c + 1] == player))) {
-        numStones++;
-      }
-      if (a[r][c] == player) {
-        numCells++;
-      }
-    }
-  }
-
-  if (!numStones) {
-    numStones = 1;
-  }
+  int numCells = count[player];
+  int numStones = corners[player].size;
 
   int score = numStones + numCells * SCORE_LARGE_PIECES;
   return score;
@@ -65,7 +49,9 @@ void Board::setArea(Piece& piece, int val) {
   for (int i = 0; i < piece.size; i++) {
     int rank = piece.cells[i].rank;
     int file = piece.cells[i].file;
+    count[a[rank][file]]--;
     a[rank][file] = val;
+    count[val]++;
   }
 }
 
