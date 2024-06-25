@@ -60,7 +60,7 @@ bool Bitmap::occupied(int row, int col) {
 int Bitmap::getCorners(Cell* dest) {
   int rows = getNumRows();
   int cols = getNumCols();
-  int numCorners = 0;
+  int n = 0;
 
   for (int r = -1; r <= rows; r++) {
     for (int c = -1; c <= cols; c++) {
@@ -73,10 +73,32 @@ int Bitmap::getCorners(Cell* dest) {
            occupied(r - 1, c + 1) ||
            occupied(r + 1, c - 1) ||
            occupied(r + 1, c + 1))) {
-        dest[numCorners++] = { (char)(r + 1), (char)(c + 1) };
+        // 1-based
+        dest[n++] = { (char)(r + 1), (char)(c + 1) };
       }
     }
   }
 
-  return numCorners;
+  return n;
+}
+
+int Bitmap::getNeighbors(Cell* dest) {
+  int rows = getNumRows();
+  int cols = getNumCols();
+  int n = 0;
+
+  for (int r = -1; r <= rows; r++) {
+    for (int c = -1; c <= cols; c++) {
+      if (!occupied(r, c) &&
+          (occupied(r - 1, c) ||
+           occupied(r, c - 1) ||
+           occupied(r + 1, c) ||
+           occupied(r, c + 1))) {
+        // 1-based
+        dest[n++] = { (char)(r + 1), (char)(c + 1) };
+      }
+    }
+  }
+
+  return n;
 }

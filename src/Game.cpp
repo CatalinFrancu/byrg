@@ -4,6 +4,7 @@
 #include "SearchResult.h"
 #include <string>
 #include "StrUtil.h"
+#include "UndoInfo.h"
 
 Game::Game() {
   pieceSet.precompute();
@@ -49,15 +50,16 @@ SearchResult Game::minimax(int player, int depth) {
   player = gen.player; // not necessarily the same
 
   best = SearchResult::minusInfinity();
+  UndoInfo undo[2];
 
   for (int i = 0; i < gen.numMoves; i++) {
     Move& mv = gen.moves[i];
-    board.makeMove(player, mv);
+    board.makeMove(player, mv, undo);
     SearchResult sr = minimax(1 - player, depth - 1);
     if (-sr.score > best.score) {
       best = { mv, -sr.score };
     }
-    board.undoMove(player, mv);
+    board.undoMove(player, mv, undo);
   }
 
   return best;

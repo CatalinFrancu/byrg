@@ -8,7 +8,8 @@ class Piece {
 public:
   Cell cells[MAX_PIECE_SIZE];
   Cell corners[MAX_CORNERS];
-  u8 size, numCorners;
+  Cell neighbors[MAX_NEIGHBORS];
+  u8 size, numCorners, numNeighbors;
 
   bool operator==(Piece other);
 
@@ -27,5 +28,5 @@ public:
   std::string toString();
 
 private:
-  void filterOnBoardCorners();
+  void filterOnBoard(Cell* cells, u8& size);
 };

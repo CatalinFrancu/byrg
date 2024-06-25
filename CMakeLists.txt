@@ -18,6 +18,8 @@ set(SOURCES
     src/Clock.h
     src/Command.cpp
     src/Command.h
+    src/CornerList.cpp
+    src/CornerList.h
     src/Game.cpp
     src/Game.h
     src/globals.h
@@ -35,6 +37,7 @@ set(SOURCES
     src/SearchResult.h
     src/StrUtil.cpp
     src/StrUtil.h
+    src/UndoInfo.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

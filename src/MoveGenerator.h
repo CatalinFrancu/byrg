@@ -11,8 +11,8 @@ public:
 
   Board& board;
   Move moves[MAX_MOVES];
-  Cell stones[MAX_STONES];
   int numStones;
+  Cell* stones;
   int player;
   int numMoves;
 

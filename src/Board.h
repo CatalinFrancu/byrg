@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Cell.h"
+#include "CornerList.h"
 #include "globals.h"
 #include "Move.h"
 #include "PieceSet.h"
+#include "UndoInfo.h"
 
 class Board {
 public:
@@ -22,6 +24,8 @@ public:
   // 0-1 = used by player 0-1; EMPTY = empty
   u8 a[PADDED_BOARD_SIZE][PADDED_BOARD_SIZE];
 
+  CornerList corners[2];
+
   // bit masks of pieces still in hand
   int inHand[2];
 
@@ -32,16 +36,21 @@ public:
   int eval(int player);
   int sideEval(int player);
 
-  void setArea(int val, Move& move);
   void makeMove(int player, Move& move);
-  void undoMove(int player, Move& move);
-  int collectStones(int player, Cell* dest);
+  void makeMove(int player, Move& move, UndoInfo* undo);
+  void undoMove(int player, Move& move, UndoInfo* undo);
   bool accommodates(Piece var, int player);
-  bool isAvailable(int player, int rank, int file);
   void print();
   void printCell(int rank, int file);
 
 private:
   void initMatrix();
   void initPlayerMasks();
+  void initCornerLists();
+
+  void setArea(Piece& p, int val);
+  void updateCornerLists(int player, Piece& piece, UndoInfo* undo);
+  void undoCornerLists(int player, UndoInfo* undo);
+
+  bool isAvailable(int player, int rank, int file);
 };

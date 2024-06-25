@@ -17,7 +17,9 @@ void MoveGenerator::run() {
 }
 
 void MoveGenerator::runForPlayer() {
-  numStones = board.collectStones(player, stones);
+  CornerList& cl = board.corners[player];
+  numStones = cl.size;
+  stones = cl.list;
 
   int hand = board.inHand[player];
   while (hand) {
