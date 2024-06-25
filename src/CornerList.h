@@ -16,4 +16,8 @@ public:
   void add(Cell c, UndoInfo& undo);
   void remove(Cell c, UndoInfo& undo);
   void restore(UndoInfo& undo);
+
+private:
+  void fastAdd(Cell c);
+  void fastRemove(Cell c);
 };

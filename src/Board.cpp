@@ -40,17 +40,10 @@ int Board::getScore(int player) {
 }
 
 int Board::eval(int player) {
-  return SCORE_SELF * sideEval(player)
-    - SCORE_OPP * sideEval(1 - player);
-}
-
-int Board::sideEval(int player) {
-  // count stones and cells
-  int numCells = count[player];
-  int numStones = corners[player].size;
-
-  int score = numStones + numCells * SCORE_LARGE_PIECES;
-  return score;
+  return SCORE_OWN_PIECES * count[player]
+    + SCORE_OWN_CORNERS * corners[player].size
+    - SCORE_OPP_PIECES * count[1 - player]
+    - SCORE_OPP_CORNERS * corners[1 - player].size;
 }
 
 void Board::setArea(Piece& piece, int val) {

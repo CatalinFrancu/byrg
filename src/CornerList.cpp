@@ -19,6 +19,11 @@ void CornerList::add(Cell c, UndoInfo& undo) {
   }
 }
 
+void CornerList::fastAdd(Cell c) {
+  where[c.rank][c.file] = size;
+  list[size++] = c;
+}
+
 void CornerList::remove(Cell c, UndoInfo& undo) {
   int pos = where[c.rank][c.file];
   if (pos != NONE) {
@@ -34,13 +39,22 @@ void CornerList::remove(Cell c, UndoInfo& undo) {
   }
 }
 
+void CornerList::fastRemove(Cell c) {
+  int pos = where[c.rank][c.file];
+  Cell last = list[size - 1];
+  where[last.rank][last.file] = pos;
+  list[pos] = last;
+
+  where[c.rank][c.file] = NONE;
+  size--;
+}
+
 void CornerList::restore(UndoInfo& undo) {
-  UndoInfo ignored;
   for (int i = 0; i < undo.numAdded; i++) {
-    remove(undo.added[i], ignored);
+    fastRemove(undo.added[i]);
   }
   for (int i = 0; i < undo.numRemoved; i++) {
-    add(undo.removed[i], ignored);
+    fastAdd(undo.removed[i]);
   }
   undo.numAdded = undo.numRemoved = 0;
 }

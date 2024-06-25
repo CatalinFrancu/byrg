@@ -17,9 +17,10 @@ public:
   };
   static constexpr char DEFAULT_COLOR[7] = "\e[49m";
 
-  static const int SCORE_SELF = 1;
-  static const int SCORE_OPP = 1;
-  static const int SCORE_LARGE_PIECES = 1;
+  static const int SCORE_OWN_PIECES = 10;
+  static const int SCORE_OPP_PIECES = 10;
+  static const int SCORE_OWN_CORNERS = 10;
+  static const int SCORE_OPP_CORNERS = 2;
   static const int NO_HAND_BONUS = 15;
 
   // 0-1 = used by player 0-1; EMPTY = empty
@@ -36,7 +37,6 @@ public:
   int getScore(int player);
 
   int eval(int player);
-  int sideEval(int player);
 
   void makeMove(int player, Move& move);
   void makeMove(int player, Move& move, UndoInfo* undo);

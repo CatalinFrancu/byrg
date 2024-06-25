@@ -73,5 +73,5 @@ void Game::makeMove(int player, std::string move) {
 }
 
 void Game::end() {
-  fprintf(stderr, "Final score: %d-%d\n", board.getScore(0), board.getScore(1));
+  fprintf(stderr, "Final score: %d %d\n", board.getScore(0), board.getScore(1));
 }
