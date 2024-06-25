@@ -31,6 +31,14 @@ void Board::initCornerLists() {
   corners[1].init(STARTING_POSITIONS[1]);
 }
 
+int Board::getScore(int player) {
+  int s = count[player];
+  if (!inHand[player]) {
+    s += NO_HAND_BONUS;
+  }
+  return s;
+}
+
 int Board::eval(int player) {
   return SCORE_SELF * sideEval(player)
     - SCORE_OPP * sideEval(1 - player);

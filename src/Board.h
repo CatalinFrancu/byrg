@@ -19,7 +19,8 @@ public:
 
   static const int SCORE_SELF = 1;
   static const int SCORE_OPP = 1;
-  static const int SCORE_LARGE_PIECES = 2;
+  static const int SCORE_LARGE_PIECES = 1;
+  static const int NO_HAND_BONUS = 15;
 
   // 0-1 = used by player 0-1; EMPTY = empty
   u8 a[PADDED_BOARD_SIZE][PADDED_BOARD_SIZE];
@@ -32,6 +33,7 @@ public:
   PieceSet* pieceSet;
 
   void init();
+  int getScore(int player);
 
   int eval(int player);
   int sideEval(int player);

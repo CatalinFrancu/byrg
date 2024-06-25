@@ -19,8 +19,8 @@ public:
   // Find, make and return a move for player. The player is assumed to still
   // be in the game.
   std::string findMove(int player);
-
   void makeMove(int player, std::string move);
+  void end();
 
 private:
   SearchResult minimax(int player, int depth);

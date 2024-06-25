@@ -48,6 +48,7 @@ int main() {
     }
   }
 
+  game.end();
   Response::success("");
   return 0;
 }

@@ -71,3 +71,7 @@ void Game::makeMove(int player, std::string move) {
   Move m = pieceSet.find(p);
   board.makeMove(player, m);
 }
+
+void Game::end() {
+  fprintf(stderr, "Final score: %d-%d\n", board.getScore(0), board.getScore(1));
+}
