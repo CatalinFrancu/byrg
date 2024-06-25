@@ -11,3 +11,15 @@ void StrUtil::reverse(char* s) {
     j--;
   }
 }
+
+std::string StrUtil::trim(std::string s) {
+  int l = 0, r = s.length();
+
+  while ((l < r) && std::isspace(s[l])) {
+    l++;
+  }
+  while ((r > l) && std::isspace(s[r - 1])) {
+    r--;
+  }
+  return s.substr(l, r - l);
+}

@@ -48,7 +48,6 @@ SearchResult Game::minimax(int player, int depth) {
   }
   player = gen.player; // not necessarily the same
 
-  best = SearchResult::minusInfinity();
   UndoInfo undo[2];
 
   for (int i = 0; i < gen.numMoves; i++) {

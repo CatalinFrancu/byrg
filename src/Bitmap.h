@@ -11,11 +11,13 @@ public:
   void rotate();
   void mirror();
 
-  int getNumRows();
-  int getNumCols();
-  bool occupied(int row, int col);
   int getNeighbors(Cell* dest);
   int getCorners(Cell* dest);
+
+private:
+  bool occupied(int row, int col);
+  int getNumRows();
+  int getNumCols();
 };
 
 const Bitmap BITMAPS[NUM_PIECES] = {

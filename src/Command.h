@@ -12,15 +12,13 @@ public:
   static const int T_PLAY = 5;
   static const int T_QUIT = 6;
 
-  int type;
+  int type = T_UNKNOWN;
   std::string strArg;
   int intArg;
 
-  Command();
   void readFromStdin();
 
 private:
   std::string getToken(std::string& s);
-  std::string trim(std::string s);
   int getPlayerFromCode(char code);
 };

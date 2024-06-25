@@ -33,7 +33,6 @@ set(SOURCES
     src/Piece.h
     src/Response.cpp
     src/Response.h
-    src/SearchResult.cpp
     src/SearchResult.h
     src/StrUtil.cpp
     src/StrUtil.h

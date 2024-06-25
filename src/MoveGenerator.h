@@ -10,21 +10,19 @@ public:
   static const int MAX_MOVES = 3'000;
 
   Board& board;
-  Move moves[MAX_MOVES];
-  int numStones;
-  Cell* stones;
   int player;
+  Move moves[MAX_MOVES];
   int numMoves;
 
   MoveGenerator(Board& board, int player);
 
   // Generates moves for the first player, beginning with @player, that still
-  // has legal moves. Sets size = 0 if the game is over.
+  // has legal moves. Sets numMoves = 0 if the game is over.
   void run();
 
 private:
   void runForPlayer();
   void runForPlayerPiece(int piece);
-  void runForPlayerPieceStone(int piece, Cell stone);
+  void runForPlayerPieceCorner(int piece, Cell c);
   void tryPlacement(u8 piece, int varId);
 };

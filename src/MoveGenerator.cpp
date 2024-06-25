@@ -17,10 +17,6 @@ void MoveGenerator::run() {
 }
 
 void MoveGenerator::runForPlayer() {
-  CornerList& cl = board.corners[player];
-  numStones = cl.size;
-  stones = cl.list;
-
   int hand = board.inHand[player];
   while (hand) {
     int piece = __builtin_ctz(hand);
@@ -30,17 +26,18 @@ void MoveGenerator::runForPlayer() {
 }
 
 void MoveGenerator::runForPlayerPiece(int piece) {
-  for (int i = 0; i < numStones; i++) {
-    runForPlayerPieceStone(piece, stones[i]);
+  CornerList& cl = board.corners[player];
+  for (int i = 0; i < cl.size; i++) {
+    runForPlayerPieceCorner(piece, cl.list[i]);
   }
 }
 
-void MoveGenerator::runForPlayerPieceStone(int piece, Cell stone) {
+void MoveGenerator::runForPlayerPieceCorner(int piece, Cell c) {
   PieceSet* ps = board.pieceSet;
-  int n = ps->numPlacements[piece][stone.rank][stone.file];
+  int n = ps->numPlacements[piece][c.rank][c.file];
   for (int i = 0; i < n; i++) {
-    int placement = ps->placements[piece][stone.rank][stone.file][i];
-    tryPlacement(piece, placement);
+    int varId = ps->placements[piece][c.rank][c.file][i];
+    tryPlacement(piece, varId);
   }
 }
 

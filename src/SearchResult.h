@@ -5,7 +5,5 @@
 class SearchResult {
 public:
   Move move;
-  int score;
-
-  static SearchResult minusInfinity();
+  int score = -INFINITY;
 };

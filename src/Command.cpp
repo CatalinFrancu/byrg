@@ -1,16 +1,12 @@
 #include "assert.h"
 #include "Command.h"
 #include <iostream>
-#include <string>
-
-Command::Command() {
-  type = T_UNKNOWN;
-}
+#include "StrUtil.h"
 
 void Command::readFromStdin() {
   std::string s;
   std::getline(std::cin, s);
-  s = trim(s);
+  s = StrUtil::trim(s);
   std::string cmd = getToken(s);
 
   if (cmd == "set_game") {
@@ -45,20 +41,8 @@ std::string Command::getToken(std::string& s) {
   }
 
   std::string first = s.substr(0, pos);
-  s = trim(s.substr(pos));
+  s = StrUtil::trim(s.substr(pos));
   return first;
-}
-
-std::string Command::trim(std::string s) {
-  int l = 0, r = s.length();
-
-  while ((l < r) && std::isspace(s[l])) {
-    l++;
-  }
-  while ((r > l) && std::isspace(s[r - 1])) {
-    r--;
-  }
-  return s.substr(l, r - l);
 }
 
 int Command::getPlayerFromCode(char code) {
