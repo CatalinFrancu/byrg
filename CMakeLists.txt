@@ -5,7 +5,13 @@ project(
   VERSION 1.0
   LANGUAGES CXX)
 
-set (CMAKE_CXX_STANDARD 20)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 set(SOURCES
     src/Bitmap.cpp

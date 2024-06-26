@@ -12,27 +12,27 @@ void CornerList::init(Cell startPos) {
 }
 
 void CornerList::add(Cell c, UndoInfo& undo) {
-  if (where[c.rank][c.file] == NONE) {
-    where[c.rank][c.file] = size;
+  if (where[(int)c.rank][(int)c.file] == NONE) {
+    where[(int)c.rank][(int)c.file] = size;
     list[size++] = c;
     undo.added[undo.numAdded++] = c;
   }
 }
 
 void CornerList::fastAdd(Cell c) {
-  where[c.rank][c.file] = size;
+  where[(int)c.rank][(int)c.file] = size;
   list[size++] = c;
 }
 
 void CornerList::remove(Cell c, UndoInfo& undo) {
-  int pos = where[c.rank][c.file];
+  int pos = where[(int)c.rank][(int)c.file];
   if (pos != NONE) {
     // superfluous if pos == size - 1, but saves a test
     Cell last = list[size - 1];
-    where[last.rank][last.file] = pos;
+    where[(int)last.rank][(int)last.file] = pos;
     list[pos] = last;
 
-    where[c.rank][c.file] = NONE;
+    where[(int)c.rank][(int)c.file] = NONE;
     size--;
 
     undo.removed[undo.numRemoved++] = c;
@@ -40,12 +40,12 @@ void CornerList::remove(Cell c, UndoInfo& undo) {
 }
 
 void CornerList::fastRemove(Cell c) {
-  int pos = where[c.rank][c.file];
+  int pos = where[(int)c.rank][(int)c.file];
   Cell last = list[size - 1];
-  where[last.rank][last.file] = pos;
+  where[(int)last.rank][(int)last.file] = pos;
   list[pos] = last;
 
-  where[c.rank][c.file] = NONE;
+  where[(int)c.rank][(int)c.file] = NONE;
   size--;
 }
 

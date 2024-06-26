@@ -65,7 +65,6 @@ void PieceSet::addPlacements(int piece, Piece var) {
 }
 
 Move PieceSet::find(Piece var) {
-  Move m;
   int rank = var.cells[0].rank;
   int file = var.cells[0].file;
 

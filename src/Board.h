@@ -52,5 +52,4 @@ private:
 
   void setArea(Piece& p, int val);
   void updateCornerLists(int player, Piece& piece, UndoInfo* undo);
-  void undoCornerLists(int player, UndoInfo* undo);
 };

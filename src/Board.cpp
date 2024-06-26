@@ -71,15 +71,10 @@ void Board::updateCornerLists(int player, Piece& piece, UndoInfo* undo) {
   // Active player also gains access to unoccupied corners.
   for (int i = 0; i < piece.numCorners; i++) {
     Cell c = piece.corners[i];
-    if (a[c.rank][c.file] == EMPTY) {
+    if (a[(int)c.rank][(int)c.file] == EMPTY) {
       corners[player].add(c, undo[player]);
     }
   }
-}
-
-void Board::undoCornerLists(int player, UndoInfo* undo) {
-  corners[0].restore(undo[0]);
-  corners[1].restore(undo[1]);
 }
 
 void Board::makeMove(int player, Move& move) {
@@ -98,19 +93,20 @@ void Board::undoMove(int player, Move& move, UndoInfo* undo) {
   Piece p = pieceSet->variants[move.varId];
   setArea(p, EMPTY);
   inHand[player] ^= (1 << move.pieceId);
-  undoCornerLists(player, undo);
+  corners[0].restore(undo[0]);
+  corners[1].restore(undo[1]);
 }
 
 bool Board::accommodates(Piece p, int player) {
   for (int i = 0; i < p.size; i++) {
     Cell c = p.cells[i];
-    if (a[c.rank][c.file] != EMPTY) {
+    if (a[(int)c.rank][(int)c.file] != EMPTY) {
       return false;
     }
   }
   for (int i = 0; i < p.numNeighbors; i++) {
     Cell c = p.neighbors[i];
-    if (a[c.rank][c.file] == player) {
+    if (a[(int)c.rank][(int)c.file] == player) {
       return false;
     }
   }

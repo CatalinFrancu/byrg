@@ -34,9 +34,9 @@ void MoveGenerator::runForPlayerPiece(int piece) {
 
 void MoveGenerator::runForPlayerPieceCorner(int piece, Cell c) {
   PieceSet* ps = board.pieceSet;
-  int n = ps->numPlacements[piece][c.rank][c.file];
+  int n = ps->numPlacements[piece][(int)c.rank][(int)c.file];
   for (int i = 0; i < n; i++) {
-    int varId = ps->placements[piece][c.rank][c.file][i];
+    int varId = ps->placements[piece][(int)c.rank][(int)c.file][i];
     tryPlacement(piece, varId);
   }
 }
