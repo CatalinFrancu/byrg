@@ -9,7 +9,7 @@ public:
   static const int NONE = -1;
 
   char where[PADDED_BOARD_SIZE][PADDED_BOARD_SIZE];
-  Cell list[MAX_STONES];
+  Cell list[MAX_CORNERS];
   int size;
 
   void init(Cell startPos);

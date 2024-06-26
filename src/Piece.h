@@ -7,7 +7,7 @@
 class Piece {
 public:
   Cell cells[MAX_PIECE_SIZE];
-  Cell corners[MAX_CORNERS];
+  Cell corners[MAX_PIECE_CORNERS];
   Cell neighbors[MAX_NEIGHBORS];
   u8 size, numCorners, numNeighbors;
 
