@@ -71,7 +71,7 @@ void Board::updateCornerLists(int player, Piece& piece, UndoInfo* undo) {
   // Active player also gains access to unoccupied corners.
   for (int i = 0; i < piece.numCorners; i++) {
     Cell c = piece.corners[i];
-    if (isAvailable(player, c.rank, c.file)) {
+    if (a[c.rank][c.file] == EMPTY) {
       corners[player].add(c, undo[player]);
     }
   }
@@ -103,22 +103,18 @@ void Board::undoMove(int player, Move& move, UndoInfo* undo) {
 
 bool Board::accommodates(Piece p, int player) {
   for (int i = 0; i < p.size; i++) {
-    int rank = p.cells[i].rank;
-    int file = p.cells[i].file;
-    if (!isAvailable(player, rank, file)) {
+    Cell c = p.cells[i];
+    if (a[c.rank][c.file] != EMPTY) {
+      return false;
+    }
+  }
+  for (int i = 0; i < p.numNeighbors; i++) {
+    Cell c = p.neighbors[i];
+    if (a[c.rank][c.file] == player) {
       return false;
     }
   }
   return true;
-}
-
-bool Board::isAvailable(int player, int rank, int file) {
-  return
-    (a[rank][file] == EMPTY) &&
-    (a[rank][file - 1] != player) &&
-    (a[rank - 1][file] != player) &&
-    (a[rank][file + 1] != player) &&
-    (a[rank + 1][file] != player);
 }
 
 void Board::print() {
