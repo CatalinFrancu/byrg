@@ -10,6 +10,7 @@ public:
   PieceSet pieceSet;
   Board board;
   Clock clock;
+  u64 evalCount;
 
   Game();
 
@@ -24,5 +25,6 @@ public:
 
 private:
   SearchResult minimax(int player, int depth);
+  SearchResult leafEval(int player);
 
 };

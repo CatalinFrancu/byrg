@@ -21,10 +21,11 @@ void Game::restart() {
 
 std::string Game::findMove(int player) {
   clock.start();
+  evalCount = 0;
   SearchResult sr = minimax(player, 2);
   board.makeMove(player, sr.move);
   board.print();
-  fprintf(stderr, "SCORE: %d\n", sr.score);
+  fprintf(stderr, "Score: %d     Positions: %llu\n", sr.score, evalCount);
   Piece p = pieceSet.variants[sr.move.varId];
   std::string str = p.toString();
   clock.stop();
@@ -33,22 +34,20 @@ std::string Game::findMove(int player) {
 }
 
 SearchResult Game::minimax(int player, int depth) {
-  SearchResult best;
   if (depth == 0) {
-    best.score = board.eval(player);
-    return best;
+    return leafEval(player);
   }
 
   MoveGenerator gen(board, player);
   gen.run();
 
   if (!gen.numMoves) {
-    best.score = board.eval(player);
-    return best;
+    return leafEval(player);
   }
   player = gen.player; // not necessarily the same
 
   UndoInfo undo[2];
+  SearchResult best;
 
   for (int i = 0; i < gen.numMoves; i++) {
     Move& mv = gen.moves[i];
@@ -61,6 +60,13 @@ SearchResult Game::minimax(int player, int depth) {
   }
 
   return best;
+}
+
+SearchResult Game::leafEval(int player) {
+  SearchResult s;
+  s.score = board.eval(player);
+  evalCount++;
+  return s;
 }
 
 void Game::makeMove(int player, std::string move) {
