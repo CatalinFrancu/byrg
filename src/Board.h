@@ -30,26 +30,28 @@ public:
 
   // bit masks of pieces still in hand
   int inHand[2];
+  int stm = 0; // side to move
+  int passCount = 0;
 
   PieceSet* pieceSet;
 
   void init();
+  void setPlayer(int player);
   int getScore(int player);
+  bool isFinal();
+  int eval();
 
-  int eval(int player);
-
-  void makeMove(int player, Move& move);
-  void makeMove(int player, Move& move, UndoInfo* undo);
-  void undoMove(int player, Move& move, UndoInfo* undo);
-  bool accommodates(Piece var, int player);
+  void makeMove(Move& move);
+  void makeMove(Move& move, UndoInfo* undo);
+  void undoMove(Move& move, UndoInfo* undo);
+  bool accommodates(Piece var);
   void print();
   void printCell(int rank, int file);
 
 private:
   void initMatrix();
-  void initPlayerMasks();
-  void initCornerLists();
+  void initPlayers();
 
   void setArea(Piece& p, int val);
-  void updateCornerLists(int player, Piece& piece, UndoInfo* undo);
+  void updateCornerLists(Piece& piece, UndoInfo* undo);
 };

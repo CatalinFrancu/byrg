@@ -30,6 +30,9 @@ set(SOURCES
     src/Game.h
     src/globals.h
     src/main.cpp
+    src/Math.cpp
+    src/Math.h
+    src/Move.cpp
     src/Move.h
     src/MoveGenerator.cpp
     src/MoveGenerator.h

@@ -24,7 +24,7 @@ public:
   void end();
 
 private:
-  SearchResult minimax(int player, int depth);
-  SearchResult leafEval(int player);
+  SearchResult minimax(int depth);
+  SearchResult leafEval();
 
 };

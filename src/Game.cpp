@@ -22,8 +22,12 @@ void Game::restart() {
 std::string Game::findMove(int player) {
   clock.start();
   evalCount = 0;
-  SearchResult sr = minimax(player, 2);
-  board.makeMove(player, sr.move);
+
+  // Take the arbiter's word that @player is the side to move and there are
+  // legal moves.
+  board.setPlayer(player);
+  SearchResult sr = minimax(2);
+  board.makeMove(sr.move);
   board.print();
   fprintf(stderr, "Score: %d     Positions: %llu\n", sr.score, evalCount);
   Piece p = pieceSet.variants[sr.move.varId];
@@ -33,38 +37,32 @@ std::string Game::findMove(int player) {
   return str;
 }
 
-SearchResult Game::minimax(int player, int depth) {
-  if (depth == 0) {
-    return leafEval(player);
+SearchResult Game::minimax(int depth) {
+  if ((depth == 0) || board.isFinal()) {
+    return leafEval();
   }
 
-  MoveGenerator gen(board, player);
-  gen.run();
-
-  if (!gen.numMoves) {
-    return leafEval(player);
-  }
-  player = gen.player; // not necessarily the same
-
-  UndoInfo undo[2];
   SearchResult best;
+  MoveGenerator gen(board);
+  gen.run();
 
   for (int i = 0; i < gen.numMoves; i++) {
     Move& mv = gen.moves[i];
-    board.makeMove(player, mv, undo);
-    SearchResult sr = minimax(1 - player, depth - 1);
+    UndoInfo undo[2];
+    board.makeMove(mv, undo);
+    SearchResult sr = minimax(depth - 1);
     if (-sr.score > best.score) {
       best = { mv, -sr.score };
     }
-    board.undoMove(player, mv, undo);
+    board.undoMove(mv, undo);
   }
 
   return best;
 }
 
-SearchResult Game::leafEval(int player) {
+SearchResult Game::leafEval() {
   SearchResult s;
-  s.score = board.eval(player);
+  s.score = board.eval();
   evalCount++;
   return s;
 }
@@ -74,7 +72,9 @@ void Game::makeMove(int player, std::string move) {
   p.fromString(move);
 
   Move m = pieceSet.find(p);
-  board.makeMove(player, m);
+  board.setPlayer(player);
+  board.makeMove(m);
+  board.print();
 }
 
 void Game::end() {
