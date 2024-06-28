@@ -10,7 +10,7 @@ public:
   PieceSet pieceSet;
   Board board;
   Clock clock;
-  u64 evalCount;
+  u64 posCount, moveCount;
 
   Game();
 

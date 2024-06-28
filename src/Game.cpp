@@ -21,7 +21,7 @@ void Game::restart() {
 
 std::string Game::findMove(int player) {
   clock.start();
-  evalCount = 0;
+  posCount = moveCount = 0;
 
   // Take the arbiter's word that @player is the side to move and there are
   // legal moves.
@@ -29,7 +29,8 @@ std::string Game::findMove(int player) {
   SearchResult sr = alphaBeta(4, -INFINITY, +INFINITY);
   board.makeMove(sr.move);
   board.print();
-  fprintf(stderr, "Score: %d     Positions: %llu\n", sr.score, evalCount);
+  fprintf(stderr, "Score: %d     Positions: %llu     Moves: %llu\n",
+          sr.score, posCount, moveCount);
   Piece p = pieceSet.variants[sr.move.varId];
   std::string str = p.toString();
   clock.stop();
@@ -45,6 +46,7 @@ SearchResult Game::alphaBeta(int depth, int alpha, int beta) {
   SearchResult best;
   MoveGenerator gen(board);
   gen.run();
+  moveCount += gen.numMoves;
 
   for (int i = 0; i < gen.numMoves; i++) {
     Move& mv = gen.moves[i];
@@ -68,7 +70,7 @@ SearchResult Game::alphaBeta(int depth, int alpha, int beta) {
 SearchResult Game::leafEval() {
   SearchResult s;
   s.score = board.eval();
-  evalCount++;
+  posCount++;
   return s;
 }
 
