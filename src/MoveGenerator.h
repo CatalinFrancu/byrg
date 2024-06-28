@@ -6,23 +6,26 @@
 
 class MoveGenerator {
 public:
-  // TBD what is reasonable
-  static const int MAX_MOVES = 3'000;
-
   Board& board;
-  Move moves[MAX_MOVES];
-  int numMoves;
+  Cell corners[MAX_CORNERS];
+  int numCorners;
+  PieceSet* ps;
+
+  int hand;
+  int piece;
+  int corner;
+  int placement;
+  bool moreMoves;
+  bool shouldAppendPass;
 
   MoveGenerator(Board& board);
 
-  // Generates moves for the first player, beginning with @player, that still
-  // has legal moves. Sets numMoves = 0 if the game is over.
-  void run();
+  bool isFinished();
+  Move getMove();
 
 private:
-  void tryEveryPiece();
-  void tryEveryCorner(int piece);
-  void tryEveryShape(int piece, Cell corner);
-  void tryShape(u8 piece, int varId);
-  void passIfNoMoves();
+  void next();
+  bool currentPieceFits();
+  int getVariantId();
+  int getNumPlacements();
 };

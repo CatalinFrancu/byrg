@@ -11,6 +11,10 @@ void CornerList::init(Cell startPos) {
   add(startPos, ignored);
 }
 
+bool CornerList::contains(Cell c) {
+  return where[(int)c.rank][(int)c.file] != NONE;
+}
+
 void CornerList::add(Cell c, UndoInfo& undo) {
   if (where[(int)c.rank][(int)c.file] == NONE) {
     where[(int)c.rank][(int)c.file] = size;
@@ -57,4 +61,11 @@ void CornerList::restore(UndoInfo& undo) {
     fastAdd(undo.removed[i]);
   }
   undo.numAdded = undo.numRemoved = 0;
+}
+
+int CornerList::copy(Cell* dest) {
+  for (int i = 0; i < size; i++) {
+    dest[i] = list[i];
+  }
+  return size;
 }

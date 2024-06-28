@@ -12,10 +12,13 @@ public:
   static const u8 EMPTY = 2;
   static constexpr Cell STARTING_POSITIONS[2] = { { 10, 5 }, { 5, 10 } };
 
-  static constexpr char ANSI_COLORS[2][7] = {
+  static constexpr char ANSI_COLOR_BG[2][7] = {
     "\e[105m", "\e[43m",
   };
-  static constexpr char DEFAULT_COLOR[7] = "\e[49m";
+  static constexpr char ANSI_COLOR_FG[2][7] = {
+    "\e[95m", "\e[33m",
+  };
+  static constexpr char DEFAULT_COLOR[11] = "\e[49m\e[39m";
 
   static const int SCORE_OWN_PIECES = 10;
   static const int SCORE_OPP_PIECES = 10;

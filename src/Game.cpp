@@ -26,15 +26,21 @@ std::string Game::findMove(int player) {
   // Take the arbiter's word that @player is the side to move and there are
   // legal moves.
   board.setPlayer(player);
-  SearchResult sr = alphaBeta(4, -INFINITY, +INFINITY);
+  SearchResult sr = alphaBeta(1, -INFINITY, +INFINITY);
   board.makeMove(sr.move);
   board.print();
   fprintf(stderr, "Score: %d     Positions: %llu     Moves: %llu\n",
           sr.score, posCount, moveCount);
-  Piece p = pieceSet.variants[sr.move.varId];
-  std::string str = p.toString();
-  clock.stop();
 
+  std::string str;
+  if (sr.move.isPass()) {
+    str = "pass";
+  } else {
+    Piece p = pieceSet.variants[sr.move.varId];
+    str = p.toString();
+  }
+
+  clock.stop();
   return str;
 }
 
@@ -45,11 +51,10 @@ SearchResult Game::alphaBeta(int depth, int alpha, int beta) {
 
   SearchResult best;
   MoveGenerator gen(board);
-  gen.run();
-  moveCount += gen.numMoves;
 
-  for (int i = 0; i < gen.numMoves; i++) {
-    Move& mv = gen.moves[i];
+  while (!gen.isFinished()) {
+    moveCount++;
+    Move mv = gen.getMove();
     UndoInfo undo[2];
     board.makeMove(mv, undo);
     SearchResult sr = alphaBeta(depth - 1, -beta, -alpha);

@@ -5,5 +5,7 @@
 class SearchResult {
 public:
   Move move;
-  int score = -INFINITY;
+
+  // Even losing final positions must be preferable to this.
+  int score = -(INFINITY + 1);
 };

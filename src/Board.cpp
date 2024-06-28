@@ -82,7 +82,12 @@ void Board::updateCornerLists(Piece& piece, UndoInfo* undo) {
   // Active player also gains access to unoccupied corners.
   for (int i = 0; i < piece.numCorners; i++) {
     Cell c = piece.corners[i];
-    if (a[(int)c.rank][(int)c.file] == EMPTY) {
+    int r = c.rank, f = c.file;
+    if ((a[r][f] == EMPTY) &&
+        (a[r - 1][f] != stm) &&
+        (a[r][f - 1] != stm) &&
+        (a[r + 1][f] != stm) &&
+        (a[r][f + 1] != stm)) {
       corners[stm].add(c, undo[stm]);
     }
   }
@@ -150,13 +155,22 @@ void Board::print() {
     fprintf(stderr, " %c", file + 'a');
   }
   fprintf(stderr, "\n");
+  fprintf(stderr, "Corners: %d purple, %d orange\n", corners[0].size, corners[1].size);
 }
 
 void Board::printCell(int rank, int file) {
-  if (a[rank][file] == EMPTY) {
-    fprintf(stderr, "  ");
-  } else {
+  Cell c = { (char)rank, (char)file };
+  if (a[rank][file] != EMPTY) {
     int p = a[rank][file];
-    fprintf(stderr, "%s  %s", ANSI_COLORS[p], DEFAULT_COLOR);
+    fprintf(stderr, "%s  %s", ANSI_COLOR_BG[p], DEFAULT_COLOR);
+  } else if (corners[0].contains(c) && corners[1].contains(c)) {
+    fprintf(stderr, "%s:%s:%s", ANSI_COLOR_FG[0], ANSI_COLOR_FG[1],
+            DEFAULT_COLOR);
+  } else if (corners[0].contains(c)) {
+    fprintf(stderr, "%s::%s", ANSI_COLOR_FG[0], DEFAULT_COLOR);
+  } else if (corners[1].contains(c)) {
+    fprintf(stderr, "%s::%s", ANSI_COLOR_FG[1], DEFAULT_COLOR);
+  } else {
+    fprintf(stderr, "  ");
   }
 }

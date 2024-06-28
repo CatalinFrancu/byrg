@@ -13,9 +13,11 @@ public:
   int size;
 
   void init(Cell startPos);
+  bool contains(Cell c);
   void add(Cell c, UndoInfo& undo);
   void remove(Cell c, UndoInfo& undo);
   void restore(UndoInfo& undo);
+  int copy(Cell* dest);
 
 private:
   void fastAdd(Cell c);
