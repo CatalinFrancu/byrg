@@ -2,7 +2,6 @@
 
 #include "Board.h"
 #include "Clock.h"
-#include "SearchResult.h"
 #include <string>
 
 class Game {
@@ -24,7 +23,7 @@ public:
   void end();
 
 private:
-  SearchResult alphaBeta(int depth, int alpha, int beta);
-  SearchResult leafEval();
+  void alphaBetaWrapper(int depth, Move& move, int& score);
+  int alphaBeta(int depth, int alpha, int beta);
 
 };

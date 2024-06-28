@@ -1,7 +1,6 @@
 #include <assert.h>
 #include "Game.h"
 #include "MoveGenerator.h"
-#include "SearchResult.h"
 #include <string>
 #include "StrUtil.h"
 #include "UndoInfo.h"
@@ -26,17 +25,19 @@ std::string Game::findMove(int player) {
   // Take the arbiter's word that @player is the side to move and there are
   // legal moves.
   board.setPlayer(player);
-  SearchResult sr = alphaBeta(4, -INFINITY, +INFINITY);
-  board.makeMove(sr.move);
+  Move move;
+  int score;
+  alphaBetaWrapper(4, move, score);
+  board.makeMove(move);
   board.print();
   fprintf(stderr, "Score: %d     Positions: %llu     Moves: %llu\n",
-          sr.score, posCount, moveCount);
+          score, posCount, moveCount);
 
   std::string str;
-  if (sr.move.isPass()) {
+  if (move.isPass()) {
     str = "pass";
   } else {
-    Piece p = pieceSet.variants[sr.move.varId];
+    Piece p = pieceSet.variants[move.varId];
     str = p.toString();
   }
 
@@ -44,14 +45,31 @@ std::string Game::findMove(int player) {
   return str;
 }
 
-SearchResult Game::alphaBeta(int depth, int alpha, int beta) {
+void Game::alphaBetaWrapper(int depth, Move& move, int& score) {
+  move.setPass();
+  score = -(INFINITY+1); // even losing positions beat this
+
+  MoveGenerator gen(board);
+  while (!gen.isFinished()) {
+    moveCount++;
+    Move mv = gen.getMove();
+    UndoInfo undo[2];
+    board.makeMove(mv, undo);
+    int child = -alphaBeta(depth - 1, -INFINITY, -score);
+    board.undoMove(mv, undo);
+    if (child > score) {
+      score = child;
+      move = mv;
+    }
+  }
+}
+
+int Game::alphaBeta(int depth, int alpha, int beta) {
   if ((depth == 0) || board.isFinal()) {
-    return leafEval();
+    posCount++;
+    return board.eval();
   }
 
-  // TODO it's easier to just have a separate routine for the top level
-  SearchResult best;
-  best.move.setPass();
   MoveGenerator gen(board);
 
   while (!gen.isFinished()) {
@@ -59,26 +77,17 @@ SearchResult Game::alphaBeta(int depth, int alpha, int beta) {
     Move mv = gen.getMove();
     UndoInfo undo[2];
     board.makeMove(mv, undo);
-    SearchResult sr = alphaBeta(depth - 1, -beta, -alpha);
-    sr.score = -sr.score;
+    int child = -alphaBeta(depth - 1, -beta, -alpha);
     board.undoMove(mv, undo);
 
-    if (sr.score >= beta) {
-      return { mv, beta };
-    } else if ((sr.score > alpha) || best.move.isPass()) {
-      alpha = sr.score;
-      best = { mv, sr.score };
+    if (child >= beta) {
+      return beta;
+    } else if (child > alpha) {
+      alpha = child;
     }
   }
 
-  return best;
-}
-
-SearchResult Game::leafEval() {
-  SearchResult s;
-  s.score = board.eval();
-  posCount++;
-  return s;
+  return alpha;
 }
 
 void Game::makeMove(int player, std::string move) {
