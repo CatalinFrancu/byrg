@@ -26,7 +26,7 @@ std::string Game::findMove(int player) {
   // Take the arbiter's word that @player is the side to move and there are
   // legal moves.
   board.setPlayer(player);
-  SearchResult sr = alphaBeta(1, -INFINITY, +INFINITY);
+  SearchResult sr = alphaBeta(4, -INFINITY, +INFINITY);
   board.makeMove(sr.move);
   board.print();
   fprintf(stderr, "Score: %d     Positions: %llu     Moves: %llu\n",
@@ -49,7 +49,9 @@ SearchResult Game::alphaBeta(int depth, int alpha, int beta) {
     return leafEval();
   }
 
+  // TODO it's easier to just have a separate routine for the top level
   SearchResult best;
+  best.move.setPass();
   MoveGenerator gen(board);
 
   while (!gen.isFinished()) {
@@ -63,7 +65,7 @@ SearchResult Game::alphaBeta(int depth, int alpha, int beta) {
 
     if (sr.score >= beta) {
       return { mv, beta };
-    } else if (sr.score > alpha) {
+    } else if ((sr.score > alpha) || best.move.isPass()) {
       alpha = sr.score;
       best = { mv, sr.score };
     }
