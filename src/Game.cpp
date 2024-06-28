@@ -26,7 +26,7 @@ std::string Game::findMove(int player) {
   // Take the arbiter's word that @player is the side to move and there are
   // legal moves.
   board.setPlayer(player);
-  SearchResult sr = minimax(2);
+  SearchResult sr = alphaBeta(4, -INFINITY, +INFINITY);
   board.makeMove(sr.move);
   board.print();
   fprintf(stderr, "Score: %d     Positions: %llu\n", sr.score, evalCount);
@@ -37,7 +37,7 @@ std::string Game::findMove(int player) {
   return str;
 }
 
-SearchResult Game::minimax(int depth) {
+SearchResult Game::alphaBeta(int depth, int alpha, int beta) {
   if ((depth == 0) || board.isFinal()) {
     return leafEval();
   }
@@ -50,11 +50,16 @@ SearchResult Game::minimax(int depth) {
     Move& mv = gen.moves[i];
     UndoInfo undo[2];
     board.makeMove(mv, undo);
-    SearchResult sr = minimax(depth - 1);
-    if (-sr.score > best.score) {
-      best = { mv, -sr.score };
-    }
+    SearchResult sr = alphaBeta(depth - 1, -beta, -alpha);
+    sr.score = -sr.score;
     board.undoMove(mv, undo);
+
+    if (sr.score >= beta) {
+      return { mv, beta };
+    } else if (sr.score > alpha) {
+      alpha = sr.score;
+      best = { mv, sr.score };
+    }
   }
 
   return best;

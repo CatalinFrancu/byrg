@@ -24,7 +24,7 @@ public:
   void end();
 
 private:
-  SearchResult minimax(int depth);
+  SearchResult alphaBeta(int depth, int alpha, int beta);
   SearchResult leafEval();
 
 };
