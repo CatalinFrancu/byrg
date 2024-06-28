@@ -15,8 +15,8 @@ public:
   int piece;
   int corner;
   int placement;
-  bool moreMoves;
-  bool shouldAppendPass;
+  bool noMoreLegal;
+  bool anyMoves;
 
   MoveGenerator(Board& board);
 
@@ -25,6 +25,7 @@ public:
 
 private:
   void next();
+  void nextLegal();
   bool currentPieceFits();
   int getVariantId();
   int getNumPlacements();

@@ -18,36 +18,33 @@ MoveGenerator::MoveGenerator(Board& b):
   hand = b.inHand[b.stm];
 
   if (!numCorners || !hand) {
-    moreMoves = false;
+    noMoreLegal = true;
   } else {
     piece = __builtin_ctz(hand);
     hand &= hand - 1;
-    moreMoves = true;
+    noMoreLegal = false;
   }
 
   corner = 0;
   placement = 0;
-  shouldAppendPass = true;
+  anyMoves = false;
+  nextLegal();
 }
 
 bool MoveGenerator::isFinished() {
-  return !moreMoves && !shouldAppendPass;
+  return noMoreLegal && anyMoves;
 }
 
 Move MoveGenerator::getMove() {
-  while (moreMoves && !currentPieceFits()) {
-    next();
-  }
-
-  shouldAppendPass = false;
-
-  if (moreMoves) {
-    Move result = { getVariantId(), (u8)piece };
-    next();
-    return result;
-  } else {
+  anyMoves = true;
+  if (noMoreLegal) {
     Move result;
     result.setPass();
+    return result;
+  } else {
+    Move result = { getVariantId(), (u8)piece };
+    next();
+    nextLegal();
     return result;
   }
 }
@@ -66,7 +63,13 @@ void MoveGenerator::next() {
     corner = 0;
     placement = 0;
   } else {
-    moreMoves = false;
+    noMoreLegal = true;
+  }
+}
+
+void MoveGenerator::nextLegal() {
+  while (!noMoreLegal && !currentPieceFits()) {
+    next();
   }
 }
 
