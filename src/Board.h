@@ -20,15 +20,34 @@ public:
   };
   static constexpr char DEFAULT_COLOR[11] = "\e[49m\e[39m";
 
-  static const int SCORE_OWN_PIECES = 10;
-  static const int SCORE_OPP_PIECES = 10;
+  static constexpr int SQUARE_VALUE[PADDED_BOARD_SIZE][PADDED_BOARD_SIZE] = {
+    { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, },
+    { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, },
+  };
+
+  static const int SCORE_OWN_PIECES = 2;
+  static const int SCORE_OPP_PIECES = 2;
   static const int SCORE_OWN_CORNERS = 10;
   static const int SCORE_OPP_CORNERS = 2;
   static const int NO_HAND_BONUS = 15;
 
   // 0-1 = used by player 0-1; EMPTY = empty
   u8 a[PADDED_BOARD_SIZE][PADDED_BOARD_SIZE];
-  int count[3]; // include count for EMPTY
+  int count[3], value[3]; // include count for EMPTY
   CornerList corners[2];
 
   // bit masks of pieces still in hand

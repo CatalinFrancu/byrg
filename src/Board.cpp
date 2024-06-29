@@ -13,12 +13,14 @@ void Board::init() {
 }
 
 void Board::initMatrix() {
+  count[0] = count[1] = 0;
+  value[0] = value[1] = value[EMPTY] = 0;
   for (int i = 0; i < PADDED_BOARD_SIZE; i++) {
     for (int j = 0; j < PADDED_BOARD_SIZE; j++) {
       a[i][j] = EMPTY;
+      value[EMPTY] += SQUARE_VALUE[i][j];
     }
   }
-  count[0] = count[1] = 0;
   count[EMPTY] = PADDED_BOARD_SIZE * PADDED_BOARD_SIZE;
 }
 
@@ -48,12 +50,12 @@ bool Board::isFinal() {
 
 int Board::eval() {
   if (isFinal()) {
-    int diff = count[stm] - count[1 - stm];
+    int diff = value[stm] - value[1 - stm];
     return INFINITY * Math::sgn(diff);
   }
-  return SCORE_OWN_PIECES * count[stm]
+  return SCORE_OWN_PIECES * value[stm]
     + SCORE_OWN_CORNERS * corners[stm].size
-    - SCORE_OPP_PIECES * count[1 - stm]
+    - SCORE_OPP_PIECES * value[1 - stm]
     - SCORE_OPP_CORNERS * corners[1 - stm].size;
 }
 
@@ -62,8 +64,10 @@ void Board::setArea(Piece& piece, int val) {
     int rank = piece.cells[i].rank;
     int file = piece.cells[i].file;
     count[a[rank][file]]--;
+    value[a[rank][file]] -= SQUARE_VALUE[rank][file];
     a[rank][file] = val;
     count[val]++;
+    value[val] += SQUARE_VALUE[rank][file];
   }
 }
 
