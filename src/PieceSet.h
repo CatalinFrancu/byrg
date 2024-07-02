@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Move.h"
 #include "Piece.h"
 
 class PieceSet {

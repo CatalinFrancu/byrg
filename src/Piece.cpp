@@ -1,3 +1,4 @@
+#include "Cell.h"
 #include "Piece.h"
 #include <string>
 

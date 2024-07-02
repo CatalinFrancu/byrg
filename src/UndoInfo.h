@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Cell.h"
+
 class UndoInfo {
 public:
   Cell added[MAX_PIECE_CORNERS];
