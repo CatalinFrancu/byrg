@@ -1,3 +1,4 @@
+#include "Args.h"
 #include <assert.h>
 #include "Game.h"
 #include "MoveGenerator.h"
@@ -5,7 +6,7 @@
 #include "StrUtil.h"
 #include "UndoInfo.h"
 
-Game::Game() {
+Game::Game(Args& args): args(args) {
   pieceSet.precompute();
   board.pieceSet = &pieceSet;
 }
@@ -15,7 +16,7 @@ bool Game::setType(std::string desc) {
 }
 
 void Game::restart() {
-  board.init();
+  board.init(args);
 }
 
 std::string Game::findMove(int player) {

@@ -3,10 +3,11 @@
 #include "Response.h"
 #include <string>
 
-int main() {
+int main(int argc, char** argv) {
 
+  Args args(argc, argv);
   Command cmd;
-  Game game;
+  Game game(args);
   std::string resp;
 
   while (cmd.type != Command::T_QUIT) {

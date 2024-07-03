@@ -1,17 +1,19 @@
 #pragma once
 
+#include "Args.h"
 #include "Board.h"
 #include "Clock.h"
 #include <string>
 
 class Game {
 public:
+  Args args;
   PieceSet pieceSet;
   Board board;
   Clock clock;
   u64 posCount, moveCount;
 
-  Game();
+  Game(Args& args);
 
   bool setType(std::string desc);
   void restart();

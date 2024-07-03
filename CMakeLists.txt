@@ -14,6 +14,8 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 set(SOURCES
+    src/Args.cpp
+    src/Args.h
     src/Bitmap.cpp
     src/Bitmap.h
     src/Board.cpp

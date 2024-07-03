@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Args.h"
 #include "Cell.h"
 #include "CornerList.h"
 #include "globals.h"
@@ -47,6 +48,14 @@ public:
   static const int PENALTY_OPP_LOST = -2;
   static const int NO_HAND_BONUS = 15;
 
+  // TODO These should not be allocated with every board.
+  int scoreOwnPieces;
+  int scoreOppPieces;
+  int scoreOwnCorners;
+  int scoreOppCorners;
+  int penaltyOwnLost;
+  int penaltyOppLost;
+
   // 0-1 = used by player 0-1; EMPTY = empty
   u8 a[PADDED_BOARD_SIZE][PADDED_BOARD_SIZE];
   int count[3], value[3]; // include count for EMPTY
@@ -60,7 +69,7 @@ public:
 
   PieceSet* pieceSet;
 
-  void init();
+  void init(Args& args);
   void setPlayer(int player);
   int getScore(int player);
   bool isFinal();
@@ -74,6 +83,7 @@ public:
   void printCell(int rank, int file);
 
 private:
+  void initCoefs(Args& args);
   void initMatrix();
   void initPlayers();
 

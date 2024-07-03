@@ -1,3 +1,4 @@
+#include "Args.h"
 #include "assert.h"
 #include "Bitmap.h"
 #include "Board.h"
@@ -7,9 +8,38 @@
 #include <stdio.h>
 #include "UndoInfo.h"
 
-void Board::init() {
+void Board::init(Args& args) {
+  initCoefs(args);
   initMatrix();
   initPlayers();
+}
+
+void Board::initCoefs(Args& args) {
+  scoreOwnPieces = (args.scoreOwnPieces == args.NONE)
+    ? SCORE_OWN_PIECES
+    : args.scoreOwnPieces;
+  scoreOppPieces = (args.scoreOppPieces == args.NONE)
+    ? SCORE_OPP_PIECES
+    : args.scoreOppPieces;
+  scoreOwnCorners = (args.scoreOwnCorners == args.NONE)
+    ? SCORE_OWN_CORNERS
+    : args.scoreOwnCorners;
+  scoreOppCorners = (args.scoreOppCorners == args.NONE)
+    ? SCORE_OPP_CORNERS
+    : args.scoreOppCorners;
+  penaltyOwnLost = (args.penaltyOwnLost == args.NONE)
+    ? PENALTY_OWN_LOST
+    : args.penaltyOwnLost;
+  penaltyOppLost = (args.penaltyOppLost == args.NONE)
+    ? PENALTY_OPP_LOST
+    : args.penaltyOppLost;
+  fprintf(stderr, "Using coefficients:\n");
+  fprintf(stderr, "    scoreOwnPieces %d\n", scoreOwnPieces);
+  fprintf(stderr, "    scoreOppPieces %d\n", scoreOppPieces);
+  fprintf(stderr, "    scoreOwnCorners %d\n", scoreOwnCorners);
+  fprintf(stderr, "    scoreOppCorners %d\n", scoreOppCorners);
+  fprintf(stderr, "    penaltyOwnLost %d\n", penaltyOwnLost);
+  fprintf(stderr, "    penaltyOppLost %d\n", penaltyOppLost);
 }
 
 void Board::initMatrix() {
@@ -54,12 +84,12 @@ int Board::eval() {
     int diff = value[stm] - value[1 - stm];
     return INFINITY * Math::sgn(diff);
   }
-  return SCORE_OWN_PIECES * value[stm]
-    + SCORE_OWN_CORNERS * corners[stm].size
-    + PENALTY_OWN_LOST * numLost[stm]
-    - SCORE_OPP_PIECES * value[1 - stm]
-    - SCORE_OPP_CORNERS * corners[1 - stm].size
-    - PENALTY_OPP_LOST * numLost[1 - stm];
+  return scoreOwnPieces * value[stm]
+    + scoreOwnCorners * corners[stm].size
+    + penaltyOwnLost * numLost[stm]
+    - scoreOppPieces * value[1 - stm]
+    - scoreOppCorners * corners[1 - stm].size
+    - penaltyOppLost * numLost[1 - stm];
 }
 
 void Board::setArea(Piece& piece, int val) {
