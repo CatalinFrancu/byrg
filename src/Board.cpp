@@ -14,6 +14,7 @@ void Board::init() {
 
 void Board::initMatrix() {
   count[0] = count[1] = 0;
+  numLost[0] = numLost[1] = 0;
   value[0] = value[1] = value[EMPTY] = 0;
   for (int i = 0; i < PADDED_BOARD_SIZE; i++) {
     for (int j = 0; j < PADDED_BOARD_SIZE; j++) {
@@ -55,8 +56,10 @@ int Board::eval() {
   }
   return SCORE_OWN_PIECES * value[stm]
     + SCORE_OWN_CORNERS * corners[stm].size
+    + PENALTY_OWN_LOST * numLost[stm]
     - SCORE_OPP_PIECES * value[1 - stm]
-    - SCORE_OPP_CORNERS * corners[1 - stm].size;
+    - SCORE_OPP_CORNERS * corners[1 - stm].size
+    - PENALTY_OPP_LOST * numLost[1 - stm];
 }
 
 void Board::setArea(Piece& piece, int val) {
@@ -87,14 +90,44 @@ void Board::updateCornerLists(Piece& piece, UndoInfo* undo) {
   for (int i = 0; i < piece.numCorners; i++) {
     Cell c = piece.corners[i];
     int r = c.rank, f = c.file;
-    if ((a[r][f] == EMPTY) &&
-        (a[r - 1][f] != stm) &&
-        (a[r][f - 1] != stm) &&
-        (a[r + 1][f] != stm) &&
-        (a[r][f + 1] != stm)) {
+    if ((a[r][f] == EMPTY) && !isAdjacent(r, f, stm)) {
       corners[stm].add(c, undo[stm]);
     }
   }
+}
+
+void Board::updateLost(Piece& piece, UndoInfo* undo) {
+  undo[0].numLost = numLost[0];
+  undo[1].numLost = numLost[1];
+  for (int i = 0; i < piece.size; i++) {
+    Cell c = piece.cells[i];
+    int rank = c.rank;
+    int file = c.file;
+    if ((a[rank][file] == 1 - stm) || isAdjacent(rank, file, 1 - stm)) {
+      numLost[1 - stm]--;
+    }
+  }
+  for (int i = 0; i < piece.numNeighbors; i++) {
+    Cell c = piece.neighbors[i];
+    int rank = c.rank;
+    int file = c.file;
+    if ((a[rank][file] == EMPTY) && !isAdjacent(rank, file, stm)) {
+      numLost[stm]++;
+    }
+  }
+}
+
+void Board::restoreLost(UndoInfo* undo) {
+  numLost[0] = undo[0].numLost;
+  numLost[1] = undo[1].numLost;
+}
+
+bool Board::isAdjacent(int rank, int file, int player) {
+  return
+    (a[rank - 1][file] == player) ||
+    (a[rank][file - 1] == player) ||
+    (a[rank + 1][file] == player) ||
+    (a[rank][file + 1] == player);
 }
 
 void Board::makeMove(Move& move) {
@@ -108,6 +141,7 @@ void Board::makeMove(Move& move, UndoInfo* undo) {
   } else {
     passCount = 0;
     Piece p = pieceSet->variants[move.varId];
+    updateLost(p, undo);
     setArea(p, stm);
     inHand[stm] ^= (1 << move.pieceId);
     updateCornerLists(p, undo);
@@ -126,6 +160,7 @@ void Board::undoMove(Move& move, UndoInfo* undo) {
     inHand[stm] ^= (1 << move.pieceId);
     corners[0].restore(undo[0]);
     corners[1].restore(undo[1]);
+    restoreLost(undo);
   }
 }
 
@@ -160,6 +195,7 @@ void Board::print() {
   }
   fprintf(stderr, "\n");
   fprintf(stderr, "Corners: %d purple, %d orange\n", corners[0].size, corners[1].size);
+  fprintf(stderr, "Lost: %d purple, %d orange\n", numLost[0], numLost[1]);
 }
 
 void Board::printCell(int rank, int file) {

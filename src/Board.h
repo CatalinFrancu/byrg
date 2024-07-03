@@ -43,12 +43,15 @@ public:
   static const int SCORE_OPP_PIECES = 2;
   static const int SCORE_OWN_CORNERS = 10;
   static const int SCORE_OPP_CORNERS = 2;
+  static const int PENALTY_OWN_LOST = -2;
+  static const int PENALTY_OPP_LOST = -2;
   static const int NO_HAND_BONUS = 15;
 
   // 0-1 = used by player 0-1; EMPTY = empty
   u8 a[PADDED_BOARD_SIZE][PADDED_BOARD_SIZE];
   int count[3], value[3]; // include count for EMPTY
   CornerList corners[2];
+  int numLost[2]; // cells neighboring occupied squares
 
   // bit masks of pieces still in hand
   int inHand[2];
@@ -76,4 +79,9 @@ private:
 
   void setArea(Piece& p, int val);
   void updateCornerLists(Piece& piece, UndoInfo* undo);
+  void updateLost(Piece& piece, UndoInfo* undo);
+  void restoreLost(UndoInfo* undo);
+
+  // Returns true iff a[r][c] neighbors a cell occupied by player.
+  bool isAdjacent(int rank, int file, int player);
 };

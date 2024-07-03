@@ -27,7 +27,7 @@ std::string Game::findMove(int player) {
   board.setPlayer(player);
   Move move;
   int score;
-  alphaBetaWrapper(4, move, score);
+  alphaBetaWrapper(1, move, score);
   board.makeMove(move);
   board.print();
   fprintf(stderr, "Score: %d     Positions: %llu     Moves: %llu\n",
@@ -101,5 +101,6 @@ void Game::makeMove(int player, std::string move) {
 }
 
 void Game::end() {
-  fprintf(stderr, "Final score: %d %d\n", board.getScore(0), board.getScore(1));
+  int x = board.getScore(0), y = board.getScore(1);
+  fprintf(stderr, "Final score: %d %d diff %d\n", x, y, x - y);
 }

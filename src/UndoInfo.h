@@ -7,4 +7,5 @@ public:
   Cell added[MAX_PIECE_CORNERS];
   Cell removed[MAX_PIECE_SIZE + MAX_NEIGHBORS];
   int numAdded = 0, numRemoved = 0;
+  int numLost = 0;
 };
