@@ -40,12 +40,12 @@ public:
     { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, },
   };
 
-  static const int SCORE_OWN_PIECES = 2;
-  static const int SCORE_OPP_PIECES = 2;
-  static const int SCORE_OWN_CORNERS = 10;
-  static const int SCORE_OPP_CORNERS = 2;
-  static const int PENALTY_OWN_LOST = -2;
-  static const int PENALTY_OPP_LOST = -2;
+  static const int SCORE_OWN_PIECES = 3;
+  static const int SCORE_OPP_PIECES = 3;
+  static const int SCORE_OWN_CORNERS = 9;
+  static const int SCORE_OPP_CORNERS = 9;
+  static const int PENALTY_OWN_LOST = -4;
+  static const int PENALTY_OPP_LOST = -4;
   static const int NO_HAND_BONUS = 15;
 
   // TODO These should not be allocated with every board.

@@ -28,7 +28,7 @@ std::string Game::findMove(int player) {
   board.setPlayer(player);
   Move move;
   int score;
-  alphaBetaWrapper(1, move, score);
+  alphaBetaWrapper(3, move, score);
   board.makeMove(move);
   board.print();
   fprintf(stderr, "Score: %d     Positions: %llu     Moves: %llu\n",

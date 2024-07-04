@@ -4,14 +4,13 @@ const PATH_TO_TWOGTP = '/home/cata/Desktop/pentobi/twogtp/twogtp';
 const PATH_TO_PENTOBI = '/home/cata/Desktop/pentobi/pentobi_gtp/pentobi-gtp';
 const PATH_TO_BYRG = __DIR__ . '/byrg';
 
-const NUM_GAMES = 100;
-const STEP = 2;
+const NUM_GAMES = 200;
 
 $bestDiff = -1000;
 
-for ($pieces = 0; $pieces <= 10; $pieces += STEP) {
-  for ($corners = 0; $corners <= 10; $corners += STEP) {
-    for ($lost = -10; $lost <= 0; $lost += STEP) {
+for ($pieces = 2; $pieces <= 5; $pieces++) {
+  for ($corners = 7; $corners <= 10; $corners++) {
+    for ($lost = -4; $lost <= 0; $lost++) {
       printf("==== ownPieces=%d oppPieces=%d ownCorners=%d " .
              "oppCorners=%d ownLost=%d oppLost=%d\n",
              $pieces, $pieces, $corners, $corners, $lost, $lost);
