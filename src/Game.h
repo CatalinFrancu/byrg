@@ -25,6 +25,11 @@ public:
   void end();
 
 private:
+  static const int OPENING_MOVES = 2;
+  static const int DEPTH_OPENING = 3;
+  static const int DEPTH_REST = 4;
+
+  int getDepth();
   void alphaBetaWrapper(int depth, Move& move, int& score);
   int alphaBeta(int depth, int alpha, int beta);
 

@@ -28,7 +28,8 @@ std::string Game::findMove(int player) {
   board.setPlayer(player);
   Move move;
   int score;
-  alphaBetaWrapper(3, move, score);
+  int depth = getDepth();
+  alphaBetaWrapper(depth, move, score);
   board.makeMove(move);
   board.print();
   fprintf(stderr, "Score: %d     Positions: %llu     Moves: %llu\n",
@@ -44,6 +45,15 @@ std::string Game::findMove(int player) {
 
   clock.stop();
   return str;
+}
+
+int Game::getDepth() {
+  int mask = board.inHand[board.stm];
+  int played = NUM_PIECES - __builtin_popcount(mask);
+  int depth = (played < OPENING_MOVES) ? DEPTH_OPENING : DEPTH_REST;
+  fprintf(stderr, "%d pieces played, calling alpha-beta at depth %d\n",
+          played, depth);
+  return depth;
 }
 
 void Game::alphaBetaWrapper(int depth, Move& move, int& score) {
