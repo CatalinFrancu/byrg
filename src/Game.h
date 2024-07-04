@@ -4,6 +4,7 @@
 #include "Board.h"
 #include "Clock.h"
 #include <string>
+#include <vector>
 
 class Game {
 public:
@@ -30,6 +31,7 @@ private:
   static const int DEPTH_REST = 4;
 
   int getDepth();
+  std::vector<Move> randomizeMoves();
   void alphaBetaWrapper(int depth, Move& move, int& score);
   int alphaBeta(int depth, int alpha, int beta);
 

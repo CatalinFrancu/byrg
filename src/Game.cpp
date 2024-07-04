@@ -2,13 +2,18 @@
 #include <assert.h>
 #include "Game.h"
 #include "MoveGenerator.h"
+#include "Rng.h"
 #include <string>
 #include "StrUtil.h"
 #include "UndoInfo.h"
+#include <vector>
 
 Game::Game(Args& args): args(args) {
   pieceSet.precompute();
   board.pieceSet = &pieceSet;
+  if (args.seed != Args::NONE) {
+    Rng::init(args.seed);
+  }
 }
 
 bool Game::setType(std::string desc) {
@@ -56,14 +61,31 @@ int Game::getDepth() {
   return depth;
 }
 
+std::vector<Move> Game::randomizeMoves() {
+  std::vector<Move> moves;
+  MoveGenerator gen(board);
+  while (!gen.isFinished()) {
+    moves.push_back(gen.getMove());
+  }
+
+  for (unsigned i = 0; i < moves.size(); i++) {
+    int j = Rng::get() % (i + 1);
+    Move tmp = moves[i];
+    moves[i] = moves[j];
+    moves[j] = tmp;
+  }
+
+  return moves;
+}
+
 void Game::alphaBetaWrapper(int depth, Move& move, int& score) {
   move.setPass();
   score = -(INFINITY+1); // even losing positions beat this
 
-  MoveGenerator gen(board);
-  while (!gen.isFinished()) {
+  std::vector<Move> moves = randomizeMoves();
+
+  for (Move mv: moves) {
     moveCount++;
-    Move mv = gen.getMove();
     UndoInfo undo[2];
     board.makeMove(mv, undo);
     int child = -alphaBeta(depth - 1, -INFINITY, -score);

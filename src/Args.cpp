@@ -13,6 +13,7 @@ Args::Args(int argc, char** argv) {
       case 3: scoreOppCorners = val; break;
       case 4: penaltyOwnLost = val; break;
       case 5: penaltyOppLost = val; break;
+      case 6: seed = val; break;
     }
   }
 }

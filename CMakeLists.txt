@@ -44,6 +44,8 @@ set(SOURCES
     src/Piece.h
     src/Response.cpp
     src/Response.h
+    src/Rng.cpp
+    src/Rng.h
     src/StrUtil.cpp
     src/StrUtil.h
     src/UndoInfo.h

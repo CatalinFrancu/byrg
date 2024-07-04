@@ -14,6 +14,7 @@ public:
   int scoreOppCorners = NONE;
   int penaltyOwnLost = NONE;
   int penaltyOppLost = NONE;
+  int seed = NONE;
 
 private:
   static constexpr struct option OPTIONS[] = {
@@ -23,6 +24,7 @@ private:
     { "score-opp-corners", required_argument, 0,  0 },
     { "penalty-own-lost",  required_argument, 0,  0 },
     { "penalty-opp-lost",  required_argument, 0,  0 },
+    { "seed",              required_argument, 0,  0 },
     { 0,                   0,                 0,  0 },
   };
 
