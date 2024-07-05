@@ -12,28 +12,28 @@ const DAT_FILE = 'output.dat';
 
 const PLAYERS = [
   [
-    'name' => 'Byrg',
-    'invocation' => '/home/cata/projects/byrg/byrg --seed 0',
-  ],
-  [
-    'name' => 'Pentobi',
-    'invocation' => '/home/cata/Desktop/pentobi/pentobi_gtp/pentobi-gtp --nobook --noresign',
-  ],
-  [
-    'name' => 'TTCO',
-    'invocation' => ENGINE_ROOT . 'ttco/TTCO/main',
-  ],
-  [
-    'name' => 'Randoom',
-    'invocation' => ENGINE_ROOT . 'randoom/Blokus',
+    'name' => 'Ansedra',
+    'invocation' => ENGINE_ROOT . 'Blokus-Player/mutare_alpha_beta_final',
   ],
   [
     'name' => 'Bro',
     'invocation' => ENGINE_ROOT . 'Bro-Will-Play-Blokus/Blockus/main',
   ],
+  [
+    'name' => 'Byrg',
+    'invocation' => '/home/cata/projects/byrg/byrg --seed 0',
+  ],
+  [
+    'name' => 'Randoom',
+    'invocation' => ENGINE_ROOT . 'randoom2/Blokus',
+  ],
+  [
+    'name' => 'TTCO',
+    'invocation' => ENGINE_ROOT . 'ttco/TTCO/main',
+  ],
   // [
-  //   'name' => 'Placeholder',
-  //   'invocation' => '/dev/null',
+  //   'name' => 'Pentobi',
+  //   'invocation' => '/home/cata/Desktop/pentobi/pentobi_gtp/pentobi-gtp --nobook --noresign',
   // ],
 ];
 
